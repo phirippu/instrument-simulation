@@ -5,6 +5,7 @@ The tool relies on the Geant4 framework. The Geant4 license explicitly forbids t
 
 Internally the project has the name "geant4-sim-gdml". It may change, but I see infinitesimal reasons to do that.
 
+```cpp
 void print_usage() {
     G4cout << G4endl;
     G4cout << "Usage: load_gdml " << G4endl
@@ -24,4 +25,4 @@ void print_usage() {
 
     G4cout << G4endl;
 }
-
+```
