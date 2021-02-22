@@ -1,0 +1,10 @@
+/control/verbose 0
+/tracking/verbose 0
+/event/verbose 0
+/run/initialize
+
+/control/execute beam.mac
+/control/execute detectors.mac
+
+/run/initialize
+/run/printProgress 10000000

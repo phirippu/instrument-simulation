@@ -1,0 +1,7 @@
+/detector/add LYSO_Crystal
+#/detector/add Crystal
+#/detector/add D1_Si
+#/detector/add D2_Si
+#/detector/add D3_Si
+#/detector/add D4_Si
+#/detector/add D5_Ph
