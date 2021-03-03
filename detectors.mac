@@ -1,4 +1,4 @@
-/detector/add LYSO_Crystal
+#/detector/add LYSO_Crystal
 #/detector/add Crystal
 #/detector/add D1_Si
 #/detector/add D2_Si

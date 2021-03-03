@@ -8,7 +8,7 @@ project(Geant4-sim-gdml)
 # You can set WITH_GEANT4_VIS to OFF via the command line or ccmake/cmake-gui
 # to build a batch mode only executable
 #
-option(WITH_GEANT4_UIVIS "Build example with Geant4 Vis drivers" ON)
+option(WITH_GEANT4_VIS "Build with Geant4 Vis drivers" ON)
 if(WITH_GEANT4_VIS)
   find_package(Geant4 REQUIRED gdml ui_all vis_all)
 else()
@@ -16,12 +16,6 @@ else()
 endif()
 
 find_package(GSL REQUIRED)
-#set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
-#set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and
-#set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
-#set(Boost_USE_MULTITHREADED      ON)
-#set(Boost_USE_STATIC_RUNTIME    OFF)
-#find_package(Boost REQUIRED COMPONENTS system)
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 #

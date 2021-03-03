@@ -27,7 +27,7 @@
  * and other examples provided by
  * the Geant4 v.10.x.x distributions
  *
- * (c) Philipp Oleynik 2018-2020
+ * (c) Philipp Oleynik 2018-2021
  * The University of Turku
  *
 **********************************************/
@@ -42,7 +42,7 @@
 #include "G4VisExecutive.hh"
 #include <ActionInitialization.hh>
 #include <G4MTRunManager.hh>
-#include <QBBC.hh>
+#include <FTFP_BERT.hh>
 #include <cstdlib>
 #include <fcntl.h>
 #include <unistd.h>
@@ -81,6 +81,8 @@ int main(int argc, char **argv) {
     G4bool set_and_use_monoenergy = FALSE;
     G4bool set_and_use_powerlaw = FALSE;
     G4bool visOpen = TRUE;
+    G4UIExecutive *ui = nullptr;
+    G4VisManager *visManager = nullptr;
     G4double particleBeamRadius = 10 * cm;
     G4double particleEnergyMeV_E1 = 0.001;
     G4double particleEnergyMeV_E2 = 0.001;
@@ -108,7 +110,7 @@ int main(int argc, char **argv) {
     CLHEP::HepRandom::setTheSeed(seed);
     G4Random::setTheSeed(seed);
 
-    G4String gdml_filename = G4String("../Aalto1-V8.2.gdml");
+    G4String gdml_filename = G4String("../block.gdml");
     G4String output_ROOT_FileName = "output";
     G4String macro_filename = "run.mac";
 
@@ -199,12 +201,16 @@ int main(int argc, char **argv) {
                 break;
             default:
                 G4cerr << argv[0] << ": Unknown option " << opt << G4endl;
+                print_usage();
                 break;
         }
     }
 
     G4GDMLParser parser;
     parser.Read(gdml_filename);
+    if (visOpen) {
+        ui = new G4UIExecutive(argc, argv);
+    }
 
 #ifdef G4MULTITHREADED
     auto *runManager = new G4MTRunManager;
@@ -213,7 +219,8 @@ int main(int argc, char **argv) {
     G4RunManager* runManager = new G4RunManager;
 #endif
 
-    runManager->SetUserInitialization(new DetectorConstruction(parser.GetWorldVolume(), parser.GetVolume("World")));
+    runManager->SetUserInitialization(new DetectorConstruction(parser.GetWorldVolume(),
+                                                               parser.GetWorldVolume()->GetLogicalVolume()));
 
     // Physics is always custom, but there is a "quick" option of basic EM physics standard_opt4.
     phys = new AaltoPhysicsList();
@@ -222,12 +229,16 @@ int main(int argc, char **argv) {
     runManager->SetUserInitialization(new ActionInitialization(particleBeamRadius, output_ROOT_FileName));
     runManager->Initialize();
 
+    if (visOpen) {
+        visManager = new G4VisExecutive;
+        visManager->Initialize();
+    }
+
     G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
     // set default mono source in case no other parameters override the behavior
     UImanager->ApplyCommand("/gps/particle " + strPart);
     UImanager->ApplyCommand("/gps/ene/mono " + G4UIcommand::ConvertToString(particleEnergyMeV_E1) + " MeV");
-
     UImanager->ApplyCommand("/control/execute " + macro_filename);
 
     if (set_and_use_monoenergy) { // override whatever macro sets
@@ -244,9 +255,6 @@ int main(int argc, char **argv) {
     }
 
     if (visOpen) {
-        G4VisManager *visManager = new G4VisExecutive;
-        visManager->Initialize();
-        auto *ui = new G4UIExecutive(argc, argv);
         UImanager->ApplyCommand("/control/execute vis.mac");
         UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
         ui->SessionStart();
@@ -260,19 +268,7 @@ int main(int argc, char **argv) {
     auto analysisManager = G4AnalysisManager::Instance();
     if (analysisManager->IsOpenFile()) { analysisManager->CloseFile(); }
 
-
     delete runManager;
 
     return 0;
 }
-//    G4cout << G4String("/run/beamOn ") + G4UIcommand::ConvertToString(particlesNumber) << G4endl;
-//    G4cout << G4String("/gun/energy ") + G4UIcommand::ConvertToString(particleEnergyMeV) + " MeV" << G4endl;
-//    G4cout << G4String("/gun/particle ") + strPart << G4endl;
-//    if (makeParticleBeam) {
-//        G4cout << G4String("Beam") << G4endl;
-//        G4cout << G4String("Beam angle, deg: ") + G4UIcommand::ConvertToString(particleBeamAngle / degree) << G4endl;
-//        G4cout << G4String("Beam radius, cm: ") + G4UIcommand::ConvertToString(particleBeamRadius / cm) << G4endl;
-//    } else {
-//        G4cout << G4String("Spherically uniform") << G4endl;
-//        G4cout << G4String("Sphere radius, cm: ") + G4UIcommand::ConvertToString(particleBeamRadius / cm) << G4endl;
-//    }
