@@ -32,7 +32,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
     for (lvciter = lvs->begin(); lvciter != lvs->end(); lvciter++) {
         if ((*lvciter)->GetName().contains("target")) {
             (*lvciter)->SetUserLimits(fTinyStepLimit);
-            G4cerr << "/detector/add " << (*lvciter)->GetName() << G4endl;
+//            G4cerr << "/detector/add " << (*lvciter)->GetName() << G4endl;
         }
     }
 

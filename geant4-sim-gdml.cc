@@ -48,6 +48,7 @@
 #include <unistd.h>
 #include <vector>
 #include <getopt.h>
+#include <boost/format.hpp>
 
 G4bool b_tuple_written;
 
@@ -65,8 +66,10 @@ void print_usage() {
            << "-o [--output] <output file name [default:output.root]>" << G4endl
            << "-p [--particle] <particle name [default:geantino]>" << G4endl
            << "-q [--quick] enable quick physics (standard EM)" << G4endl
+           << "-r [--randomid] enable random seed printed as the output suffix" << G4endl
            << "-s [--sigma] <gaussian sigma, MeV>" << G4endl
-           << "-x [--execute] <macro file name>" << G4endl;
+           << "-x [--execute] <macro file name>" << G4endl
+           << "-z [--printstat] print statistics on logical volumes" << G4endl;
 
     G4cout << G4endl;
 }
@@ -81,6 +84,8 @@ int main(int argc, char **argv) {
     G4bool set_and_use_monoenergy = FALSE;
     G4bool set_and_use_powerlaw = FALSE;
     G4bool visOpen = TRUE;
+    G4bool massPrinted = FALSE;
+    G4bool randomID = FALSE;
     G4UIExecutive *ui = nullptr;
     G4VisManager *visManager = nullptr;
     G4double particleBeamRadius = 10 * cm;
@@ -128,11 +133,13 @@ int main(int argc, char **argv) {
                     {"mono",         optional_argument, nullptr, 'm'},
                     {"sigma",        optional_argument, nullptr, 's'},
                     {"quick",        optional_argument, nullptr, 'q'},
+                    {"randomid",     optional_argument, nullptr, 'r'},
                     {"inputfile",    required_argument, nullptr, 'i'},
                     {"execute",      optional_argument, nullptr, 'x'},
+                    {"printstat",    optional_argument, nullptr, 'z'},
                     {nullptr, 0,                        nullptr, 0}
             };
-    const char *const short_options = ":a:c:e:y:glmi:n:o:p:qs:x:";
+    const char *const short_options = ":a:c:e:y:glmi:n:o:p:qrs:x:z";
     int opt;
     while ((opt = getopt_long(argc, argv, short_options, long_options, nullptr)) != -1) {
         switch (opt) {
@@ -185,6 +192,10 @@ int main(int argc, char **argv) {
                 physName = "standard_opt4";
                 G4cout << "Standard opt 4 physics set" << G4endl;
                 break;
+            case 'r':
+                randomID = TRUE;
+                G4cout << "Random ROOT file ID will be used" << G4endl;
+                break;
             case 's':
                 particle_sigma = strtod(optarg, &ptr);
                 G4cout << "Gaussian sigma set" << particle_sigma << G4endl;
@@ -192,6 +203,10 @@ int main(int argc, char **argv) {
             case 'x':
                 macro_filename = G4String(optarg);
                 G4cout << "Macro to be executed " << macro_filename << G4endl;
+                break;
+            case 'z':
+                massPrinted = TRUE;
+                G4cout << "Statistics on logical volumes will be printed to stderr" << G4endl;
                 break;
             case 0:  // a flag is set, no other action is taken
                 break;
@@ -206,6 +221,7 @@ int main(int argc, char **argv) {
         }
     }
 
+    G4cout << "[INFO] Will use GDML file name " << gdml_filename << G4endl;
     G4GDMLParser parser;
     parser.Read(gdml_filename);
     if (visOpen) {
@@ -226,6 +242,14 @@ int main(int argc, char **argv) {
     phys = new AaltoPhysicsList();
     phys->AddPhysicsList(physName);
     runManager->SetUserInitialization(phys);
+
+    output_ROOT_FileName.toLower();
+    output_ROOT_FileName = output_ROOT_FileName.substr(0, output_ROOT_FileName.find(".root"));
+    if (randomID) {
+        output_ROOT_FileName = output_ROOT_FileName + "_0x" + (boost::format("%016x") % seed).str() + ".root";
+    }
+    G4cout << "[INFO] Will use output file name " << output_ROOT_FileName << G4endl;
+
     runManager->SetUserInitialization(new ActionInitialization(particleBeamRadius, output_ROOT_FileName));
     runManager->Initialize();
 
@@ -253,20 +277,19 @@ int main(int argc, char **argv) {
         UImanager->ApplyCommand("/gps/ene/mono " + G4UIcommand::ConvertToString(particleEnergyMeV_E1) + " MeV");
         UImanager->ApplyCommand("/gps/ene/sigma " + G4UIcommand::ConvertToString(particle_sigma) + " MeV");
     }
-//#define MASSDISPLAY
-#ifdef MASSDISPLAY
-    auto lvs = G4LogicalVolumeStore::GetInstance();
-    std::vector<G4LogicalVolume *>::const_iterator lvciter;
-    for (lvciter = lvs->begin(); lvciter != lvs->end(); lvciter++) {
-        if ((*lvciter)->GetName()) {
-            G4cerr << "Logical volume name " << (*lvciter)->GetName() << "\t" <<
-                   (*lvciter)->GetMass()/gram << "gram\t" <<
-                   (*lvciter)->GetSolid()->GetExtent() << " extent\t" <<
-                   G4endl;
+
+    if (massPrinted) {
+        auto lvs = G4LogicalVolumeStore::GetInstance();
+        std::vector<G4LogicalVolume *>::const_iterator lvciter;
+        for (lvciter = lvs->begin(); lvciter != lvs->end(); lvciter++) {
+            if ((*lvciter)->GetName()) {
+                G4cerr << "Logical volume name " << (*lvciter)->GetName() << "\t" <<
+                       (*lvciter)->GetMass() / gram << " gram\n" <<
+                       (*lvciter)->GetSolid()->GetExtent() <<
+                       G4endl;
+            }
         }
     }
-    return 0;
-#endif
 
     if (visOpen) {
         UImanager->ApplyCommand("/control/execute vis.mac");
@@ -275,6 +298,7 @@ int main(int argc, char **argv) {
         delete ui;
         delete visManager;
     } else {
+        G4cout << "[INFO] Batch mode run. Nparticles " << particlesNumber << G4endl;
         UImanager->SetVerboseLevel(0);
         UImanager->ApplyCommand(G4String("/run/beamOn ") + G4UIcommand::ConvertToString(particlesNumber));
     }
