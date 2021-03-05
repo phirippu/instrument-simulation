@@ -20,8 +20,10 @@ void print_usage() {
            << "-o [--output] <output file name [default:output.root]>" << G4endl
            << "-p [--particle] <particle name [default:geantino]>" << G4endl
            << "-q [--quick] enable quick physics (standard EM)" << G4endl
+           << "-r [--randomid] enable random seed printed as the output suffix" << G4endl
            << "-s [--sigma] <gaussian sigma, MeV>" << G4endl
-           << "-x [--execute] <macro file name>" << G4endl;
+           << "-x [--execute] <macro file name>" << G4endl
+           << "-z [--printstat] print statistics on logical volumes" << G4endl;
 
     G4cout << G4endl;
 }
