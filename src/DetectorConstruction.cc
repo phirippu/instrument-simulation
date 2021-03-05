@@ -30,8 +30,9 @@ void DetectorConstruction::ConstructSDandField() {
 G4VPhysicalVolume *DetectorConstruction::Construct() {
     std::vector<G4LogicalVolume *>::const_iterator lvciter;
     for (lvciter = lvs->begin(); lvciter != lvs->end(); lvciter++) {
-        if ((*lvciter)->GetName() == "SILICON_DETECTOR") {
+        if ((*lvciter)->GetName().contains("target")) {
             (*lvciter)->SetUserLimits(fTinyStepLimit);
+            G4cerr << "/detector/add " << (*lvciter)->GetName() << G4endl;
         }
     }
 

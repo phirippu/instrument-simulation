@@ -253,6 +253,20 @@ int main(int argc, char **argv) {
         UImanager->ApplyCommand("/gps/ene/mono " + G4UIcommand::ConvertToString(particleEnergyMeV_E1) + " MeV");
         UImanager->ApplyCommand("/gps/ene/sigma " + G4UIcommand::ConvertToString(particle_sigma) + " MeV");
     }
+//#define MASSDISPLAY
+#ifdef MASSDISPLAY
+    auto lvs = G4LogicalVolumeStore::GetInstance();
+    std::vector<G4LogicalVolume *>::const_iterator lvciter;
+    for (lvciter = lvs->begin(); lvciter != lvs->end(); lvciter++) {
+        if ((*lvciter)->GetName()) {
+            G4cerr << "Logical volume name " << (*lvciter)->GetName() << "\t" <<
+                   (*lvciter)->GetMass()/gram << "gram\t" <<
+                   (*lvciter)->GetSolid()->GetExtent() << " extent\t" <<
+                   G4endl;
+        }
+    }
+    return 0;
+#endif
 
     if (visOpen) {
         UImanager->ApplyCommand("/control/execute vis.mac");

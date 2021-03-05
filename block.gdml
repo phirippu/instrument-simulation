@@ -2,11 +2,11 @@
 <gdml xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="./gdml.xsd">
 
   <define>
-    <position name="SiliconBlockUpper_vol_0_pos_0x438ed50" unit="cm" x="7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+    <position name="SiliconBlockUpper_vol_0_pos_0x438ed50" unit="mm" x="7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
     <rotation name="identity_rot" unit="rad" x="0" y="0" z="0"/>
-    <position name="SiliconBlockDown_vol_1_pos_0x43938f0" unit="cm" x="-7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
-    <position name="AssemblyVol_pos_1" unit="cm" x="14.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
-    <position name="AssemblyVol_pos_2" unit="cm" x="-14.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+    <position name="SiliconBlockDown_vol_1_pos_0x43938f0" unit="mm" x="-7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+    <position name="AssemblyVol_pos_1" unit="mm" x="14.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+    <position name="AssemblyVol_pos_2" unit="mm" x="-14.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
   </define>
 
   <materials>
@@ -27,7 +27,7 @@
       <atom type="A" unit="g/mol" value="3.99480000e+01"/>
     </element>
     <material name="Air">
-      <D type="density" unit="g/cm3" value="1.20000000e-03"/>
+      <D type="density" unit="g/cm3" value="1.20000000e-06"/>
       <fraction n="7.54000000e-01" ref="N"/>
       <fraction n="2.34000000e-01" ref="O"/>
       <fraction n="1.20000000e-02" ref="AR"/>
@@ -35,9 +35,9 @@
   </materials>
 
   <solids>
-    <box lunit="cm" name="world_volume_shape_0x4345980" x="6.00000000e+03" y="6.00000000e+03" z="6.00000000e+03"/>
-    <box lunit="cm" name="SiliconBlockUpper_vol_shape_0x438eae0" x="10.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
-    <box lunit="cm" name="SiliconBlockDown_vol_shape_0x43935f0" x="10.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
+    <box lunit="mm" name="world_volume_shape_0x4345980" x="6.00000000e+03" y="6.00000000e+03" z="6.00000000e+03"/>
+    <box lunit="mm" name="SiliconBlockUpper_vol_shape_0x438eae0" x="10.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
+    <box lunit="mm" name="SiliconBlockDown_vol_shape_0x43935f0" x="10.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
   </solids>
 
   <structure>

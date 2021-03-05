@@ -3,7 +3,7 @@
 /event/verbose 0
 /run/initialize
 
-/control/execute beam.mac
+/control/execute spectrum.mac
 /control/execute detectors.mac
 
 /run/initialize
