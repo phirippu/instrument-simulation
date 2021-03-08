@@ -5,6 +5,7 @@
 
 /control/execute spectrum.mac
 /control/execute detectors.mac
+/control/execute beam.mac
 
 /run/initialize
 /run/printProgress 10000000
