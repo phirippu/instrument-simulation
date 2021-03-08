@@ -10,12 +10,12 @@
 
 /gps/pos/type Plane
 /gps/pos/shape Circle
-/gps/pos/centre 0 0 0 mm
+/gps/pos/centre 0 0 10 mm
 /gps/pos/rot1 0 0 1 cm
 /gps/pos/radius 0.1 cm
 /gps/ang/type beam2d
 /gps/ang/surfnorm true
-/gps/direction 1 0 0
+/gps/direction 0 0 -1
 
 
 

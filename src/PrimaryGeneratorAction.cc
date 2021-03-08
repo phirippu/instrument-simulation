@@ -38,7 +38,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4double Radius, CLHEP::Hep3Vecto
 void PrimaryGeneratorAction::InitTheGun() {
     fMessengerDir = new G4GenericMessenger(this, "/gun/tune/", "Primary generator tuning");
     fGunPosition = G4ThreeVector(0 * mm, 0 * mm, 10 * mm);
-    fGunDirection = G4ThreeVector(0, 0, 1);
+    fGunDirection = G4ThreeVector(0, 0, -1);
     DefineCommands();
 }
 
