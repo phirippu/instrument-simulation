@@ -4,13 +4,13 @@
 /gun/tune/beam 8
 /gun/tune/axis 1 0 0
 
-#/gps/ene/type Gauss
-#/gps/ene/mono 100 MeV
-#/gps/ene/sigma 1 MeV
+/gps/ene/type Gauss
+/gps/ene/mono 100 MeV
+/gps/ene/sigma 1 MeV
 
 /gps/pos/type Plane
 /gps/pos/shape Circle
-/gps/pos/centre -100 0 -17.5 mm
+/gps/pos/centre 0 0 0 mm
 /gps/pos/rot1 0 0 1 cm
 /gps/pos/radius 0.1 cm
 /gps/ang/type beam2d
