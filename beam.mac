@@ -2,30 +2,34 @@
 # 3 - a power law 1-10 MeV with zero thickness head on (Debug)
 # 8 - full macro-defined beam
 /gun/tune/beam 8
-/gun/tune/axis 1 0 0
 
-#/gps/ene/type Gauss
-#/gps/ene/mono 100 MeV
-#/gps/ene/sigma 1 MeV
-
-/gps/pos/type Plane
-/gps/pos/shape Circle
-/gps/pos/centre -100 0 -17.5 mm
-/gps/pos/rot1 0 0 1 cm
-/gps/pos/radius 0.1 cm
-/gps/ang/type beam2d
-/gps/ang/surfnorm true
-/gps/direction 1 0 0
-
-
+/gps/particle proton
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0 0 0
+/gps/pos/radius 1 cm
+/gps/ang/type cos
+/gps/energy 10 MeV
 
 
 
 
 #/gps/ene/type Gauss
-#/gps/ene/mono 10 MeV
-#/gps/ene/sigma 1 MeV
+#/gps/ene/mono 12 MeV
+#/gps/ene/sigma 10 MeV
 
+#/gps/pos/type Plane
+#/gps/pos/shape Circle
+#/gps/pos/centre 0 0 10 mm
+#/gps/pos/rot1 0 0 1 cm
+#/gps/pos/radius 0.1 cm
+#/gps/ang/type beam2d
+#/gps/ang/surfnorm true
+#/gps/direction 0 0 -1
+
+
+#/run/beamOn 100
+#/gun/tune/axis 1 0 0
 #/gps/pos/type Surface
 #/gun/energy 1 MeV
 #/gps/ene/mono 100 MeV
@@ -41,13 +45,5 @@
 #/gps/ene/mono 15 MeV
 #/gps/ene/sigma 1 MeV
 #/gps/pos/type Surface
-#/gun/energy 1 MeV
+#/gun/energy 100 MeV
 #/gps/ene/mono 100 MeV
-
-#/detector/add SILICON_DETECTOR
-#/detector/add ENTRANCE_WINDOW
-#/detector/add PASSIVE_SILICON_AREA
-#/detector/add PHOTODIODE
-#/detector/add SCINTILLATOR
-#/detector/add CASE_FRONTAL
-

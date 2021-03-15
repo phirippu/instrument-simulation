@@ -25,13 +25,13 @@
 #/vis/viewer/set/viewpointThetaPhi 90. 0.
 #
 # Specify zoom value:
-/vis/viewer/zoom .4
+#/vis/viewer/zoom .4
 #
 # Specify style (surface or wireframe):
 #/vis/viewer/set/style wireframe
 #
 # Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 10 cm
+/vis/scene/add/axes 0 0 0 1 cm
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
@@ -66,3 +66,7 @@
 #
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush
+
+/vis/multithreading/maxEventQueueSize 100
+/vis/scene/endOfEventAction accumulate 100
+/run/beamOn 100
