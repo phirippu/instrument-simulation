@@ -1,0 +1,20 @@
+Requirements
+============
+
+You will need Geant4, GSL libraries and Boost.
+
+Install
+=======
+
+To install the software, create a build directory. Go to build directory and run cmake. 
+If everything went well, run make -j <number of compiler threads>. Optionally, run make install
+
+For instance:
+
+mkdir build
+cd build
+cmake ..
+make -j 24
+make install
+
+Have fun, be careful.
