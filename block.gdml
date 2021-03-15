@@ -5,7 +5,7 @@
 
   <define>
     <quantity name="PCBThick" value="1.6" unit="mm" />
-    <quantity name="CuThick" value="0.25" unit="mm" />
+    <quantity name="CuThick" value="0.15" unit="mm" />
     <quantity name="SiThick" value="0.5" unit="mm" />
     <quantity name="PMMAThick" value="1" unit="mm" />
   </define>
@@ -259,7 +259,7 @@
     <box name="PCB" x="10" y="10" z="PCBThick" />
 
     <!--Copper Layer on top of PCB-->
-    <box name="CuLayer" x="3" y="3" z="CuThick" />
+    <box name="CuLayer" x="10" y="10" z="CuThick" />
 
     <!--The sensitive silicon chip -->
     <box name="SiChip" x="1" y="1" z="SiThick" />
@@ -269,7 +269,11 @@
     <!--The PMMA top layer -->
     <box name="PMMALayer" x="3" y="3" z="PMMAThick" />
 
-
+    <subtraction name="PMMAcover" >
+      <first ref="PMMALayer" />
+      <second ref="SiChip" />
+      <position name="Subpos" x="0" y="0" z="-(PMMAThick-SiThick)/2" />
+    </subtraction>
 
 
   </solids>
@@ -298,8 +302,10 @@
 
     <volume name="PMMAvol" >
       <materialref ref="Acrylic" />
-      <solidref ref="PMMALayer" />
+      <solidref ref="PMMAcover" />
     </volume>
+
+
 
 
     <!--################################ World ##################################################-->
@@ -325,7 +331,7 @@
 
       <physvol>
         <volumeref ref="PMMAvol" />
-        <position name="PMMApos" x="0" y="0" z="PCBThick+CuThick+SiThick+PMMAThick/2" />
+        <position name="PMMApos" x="0" y="0" z="PCBThick+CuThick+PMMAThick/2" />
       </physvol>
 
     </volume>
