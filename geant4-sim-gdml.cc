@@ -86,6 +86,7 @@ int main(int argc, char **argv) {
     G4bool visOpen = TRUE;
     G4bool massPrinted = FALSE;
     G4bool randomID = FALSE;
+    G4bool use_ftfp = FALSE;
     G4UIExecutive *ui = nullptr;
     G4VisManager *visManager = nullptr;
     G4double particleBeamRadius = 10 * cm;
@@ -190,6 +191,7 @@ int main(int argc, char **argv) {
                 break;
             case 'q':
                 physName = "standard_opt4";
+                use_ftfp = TRUE;
                 G4cout << "Standard opt 4 physics set" << G4endl;
                 break;
             case 'r':
@@ -238,10 +240,15 @@ int main(int argc, char **argv) {
     runManager->SetUserInitialization(new DetectorConstruction(parser.GetWorldVolume(),
                                                                parser.GetWorldVolume()->GetLogicalVolume()));
 
-    // Physics is always custom, but there is a "quick" option of basic EM physics standard_opt4.
-    phys = new AaltoPhysicsList();
-    phys->AddPhysicsList(physName);
-    runManager->SetUserInitialization(phys);
+    if (use_ftfp) {
+        auto physics = new FTFP_BERT();
+        runManager->SetUserInitialization(physics);
+
+    } else {
+        phys = new AaltoPhysicsList();
+        phys->AddPhysicsList(physName);
+        runManager->SetUserInitialization(phys);
+    }
 
     output_ROOT_FileName.toLower();
     output_ROOT_FileName = output_ROOT_FileName.substr(0, output_ROOT_FileName.find(".root"));
