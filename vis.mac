@@ -67,4 +67,6 @@
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush
 
-/run/beamOn 10
+/vis/multithreading/maxEventQueueSize 100
+/vis/scene/endOfEventAction accumulate 100
+/run/beamOn 100

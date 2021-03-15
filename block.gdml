@@ -253,7 +253,7 @@
 
   <solids>
     <!--World-->
-    <box name="WorldBox" x="100" y="100" z="100" />
+    <orb name="WorldSphere" r="12" />
 
     <!--FR-4 PCB-->
     <box name="PCB" x="10" y="10" z="PCBThick" />
@@ -263,6 +263,8 @@
 
     <!--The sensitive silicon chip -->
     <box name="SiChip" x="1" y="1" z="SiThick" />
+    <!-- 1mm * 1mm * 0.5mm = 0.5 mm³ -->
+    <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams -->
 
     <!--The PMMA top layer -->
     <box name="PMMALayer" x="3" y="3" z="PMMAThick" />
@@ -304,7 +306,7 @@
 
     <volume name="World" >
       <materialref ref="Vacuum" />
-      <solidref ref="WorldBox" />
+      <solidref ref="WorldSphere" />
 
       <physvol>
         <volumeref ref="PCBvol" />
