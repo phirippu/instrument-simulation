@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
 
     G4String gdml_filename = G4String("../block.gdml");
     G4String output_ROOT_FileName = "output";
-    G4String macro_filename = "run.mac";
+    G4String macro_filename = "../macro/run.mac";
 
     static struct option long_options[] =
             {
@@ -292,7 +292,7 @@ int main(int argc, char **argv) {
     }
 
     if (visOpen) {
-        UImanager->ApplyCommand("/control/execute vis.mac");
+        UImanager->ApplyCommand("/control/execute ../macro/vis.mac");
         UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
         ui->SessionStart();
         delete ui;
