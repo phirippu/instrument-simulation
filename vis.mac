@@ -69,8 +69,6 @@
 
 
 
-
-
 /vis/multithreading/maxEventQueueSize 100
 /vis/scene/endOfEventAction accumulate 100
 /run/beamOn 100

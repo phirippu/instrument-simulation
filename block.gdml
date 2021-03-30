@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<gdml xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="gdml.xsd">
+<gdml xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="schema/gdml.xsd">
 
   <!--################################ Variables ##################################################-->
 
   <define>
-    <quantity name="PCBThick" value="1.6" unit="mm" />
-    <quantity name="CuThick" value="0.15" unit="mm" />
-    <quantity name="SiThick" value="0.5" unit="mm" />
-    <quantity name="PMMAThick" value="1" unit="mm" />
+    <variable name="PCBThick" value="1.6" />
+    <variable name="CuThick" value="0.15" />
+    <variable name="SiThick" value="0.5" />
+    <variable name="PMMAThick" value="1.5" />
   </define>
 
 
@@ -264,7 +264,7 @@
     <!--The sensitive silicon chip -->
     <box name="SiChip" x="1" y="1" z="SiThick" />
     <!-- 1mm * 1mm * 0.5mm = 0.5 mm³ -->
-    <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams -->
+    <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams = 4.48e-6 kg -->
 
     <!--The PMMA top layer -->
     <box name="PMMALayer" x="3" y="3" z="PMMAThick" />
