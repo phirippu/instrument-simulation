@@ -89,8 +89,8 @@ int main(int argc, char **argv) {
     G4UIExecutive *ui = nullptr;
     G4VisManager *visManager = nullptr;
     G4double particleBeamRadius = 10 * cm;
-    G4double particleEnergyMeV_E1 = 0.001;
-    G4double particleEnergyMeV_E2 = 0.001;
+    G4double particleEnergyMeV_E1 = 1;
+    G4double particleEnergyMeV_E2 = 1;
     G4double particle_sigma = 0.001;
     G4double powerlaw_alpha = 0;
     G4int nThreads = G4Threading::G4GetNumberOfCores();
@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
     CLHEP::HepRandom::setTheSeed(seed);
     G4Random::setTheSeed(seed);
 
-    G4String gdml_filename = G4String("../block.gdml");
+    G4String gdml_filename = G4String("../gdml/main.gdml");
     G4String output_ROOT_FileName = "output";
     G4String macro_filename = "../macro/run.mac";
 

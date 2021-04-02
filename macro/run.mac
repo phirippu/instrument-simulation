@@ -3,9 +3,9 @@
 /event/verbose 0
 /run/initialize
 
-/control/execute spectrum.mac
-/control/execute detectors.mac
-/control/execute beam.mac
+/control/execute ../macro/spectrum.mac
+/control/execute ../macro/detectors.mac
+/control/execute ../macro/beam.mac
 
 /run/initialize
 /run/printProgress 10000000

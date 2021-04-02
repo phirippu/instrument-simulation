@@ -1,0 +1,265 @@
+<materials>
+
+    <element Z="1" formula="H" name="Hydrogen" >
+        <atom value="1.008"/>
+    </element>
+    <element Z="2" formula="He" name="Helium" >
+        <atom value="4.0026"/>
+    </element>
+    <element Z="3" formula="Li" name="Lithium" >
+        <atom value="6.94"/>
+    </element>
+    <element Z="4" formula="Be" name="Beryllium" >
+        <atom value="9.0122"/>
+    </element>
+    <element Z="5" formula="B" name="Boron" >
+        <atom value="10.81"/>
+    </element>
+    <element Z="6" formula="C" name="Carbon" >
+        <atom value="12.0107"/>
+    </element>
+    <element Z="7" formula="N" name="Nitrogen">
+        <atom value="14.0067"/>
+    </element>
+    <element Z="8" formula="O" name="Oxygen">
+        <atom value="15.999"/>
+    </element>
+    <element Z="9" formula="F" name="Fluorine">
+        <atom value="18.998"/>
+    </element>
+    <element Z="10" formula="Ne" name="Neon">
+        <atom value="20.180"/>
+    </element>
+    <element Z="11" formula="Na" name="Sodium">
+        <atom value="22.99"/>
+    </element>
+    <element Z="12" formula="Mg" name="Magnesium">
+        <atom value="24.305"/>
+    </element>
+    <element Z="13" formula="Al" name="Aluminum">
+        <atom value="26.9815"/>
+    </element>
+    <element Z="14" formula="Si" name="Silicon">
+        <atom value="28.0855"/>
+    </element>
+    <element Z="15" formula="P" name="Phosphorus">
+        <atom value="30.973"/>
+    </element>
+    <element Z="16" formula="S" name="Sulphur">
+        <atom value="32.065"/>
+    </element>
+    <element Z="18" formula="Ar" name="Argon">
+        <atom value="39.9480"/>
+    </element>
+    <element Z="19" formula="K" name="Potassium">
+        <atom value="39.0983"/>
+    </element>
+    <element Z="20" formula="Ca" name="Calcium">
+        <atom value="40.078"/>
+    </element>
+    <element Z="22" formula="Ti" name="Titanium">
+        <atom value="47.867"/>
+    </element>
+    <element Z="24" formula="Cr" name="Chromium">
+        <atom value="51.9961"/>
+    </element>
+    <element Z="26" formula="Fe" name="Iron">
+        <atom value="55.8450"/>
+    </element>
+    <element Z="28" formula="Ni" name="Nickel">
+        <atom value="58.6934"/>
+    </element>
+    <element Z="29" formula="Cu" name="Copper">
+        <atom value="63.546"/>
+    </element>
+    <element Z="35" formula="Br" name="Bromine">
+        <atom value="79.904"/>
+    </element>
+
+
+
+    <material name="epoxy_resin" formula="C38H40O6Br4">
+        <D value="1.1250" unit="g/cm3"/>
+        <composite n="38" ref="Carbon"/>
+        <composite n="40" ref="Hydrogen"/>
+        <composite n="6" ref="Oxygen"/>
+        <composite n="4" ref="bromine"/>
+    </material>
+
+    <material name="SiO2" formula="SiO2">
+        <D value="2.2" unit="g/cm3"/>
+        <composite n="1" ref="Silicon"/>
+        <composite n="2" ref="Oxygen"/>
+    </material>
+
+    <material name="Al2O3" formula="Al2O3">
+        <D value="3.97" unit="g/cm3"/>
+        <composite n="2" ref="Aluminum"/>
+        <composite n="3" ref="Oxygen"/>
+    </material>
+
+    <material name="Fe2O3" formula="Fe2O3">
+        <D value="5.24" unit="g/cm3"/>
+        <composite n="2" ref="iron"/>
+        <composite n="3" ref="Oxygen"/>
+    </material>
+
+    <material name="CaO" formula="CaO">
+        <D value="3.35" unit="g/cm3"/>
+        <composite n="1" ref="calcium"/>
+        <composite n="1" ref="Oxygen"/>
+    </material>
+
+    <material name="MgO" formula="MgO">
+        <D value="3.58" unit="g/cm3"/>
+        <composite n="1" ref="Magnesium"/>
+        <composite n="1" ref="Oxygen"/>
+    </material>
+
+    <material name="Na2O" formula="Na2O">
+        <D value="2.27" unit="g/cm3"/>
+        <composite n="2" ref="Sodium"/>
+        <composite n="1" ref="Oxygen"/>
+    </material>
+
+    <material name="TiO2" formula="TiO2">
+        <D value="4.23" unit="g/cm3"/>
+        <composite n="1" ref="titanium"/>
+        <composite n="2" ref="Oxygen"/>
+    </material>
+
+    <material name="FeO" formula="FeO">
+        <D value="5.745" unit="g/cm3"/>
+        <composite n="1" ref="iron"/>
+        <composite n="1" ref="Oxygen"/>
+    </material>
+
+    <material name="CO2" formula="CO2">
+        <D value="1.562" unit="g/cm3"/>
+        <composite n="1" ref="iron"/>
+        <composite n="2" ref="Oxygen"/>
+    </material>
+
+    <material name="P2O5" formula="P2O5">
+        <D value="1.562" unit="g/cm3"/>
+        <composite n="2" ref="phosphorus"/>
+        <composite n="5" ref="Oxygen"/>
+    </material>
+
+    <material name="fibrous_glass">
+        <D value="2.74351" unit="g/cm3"/>
+        <fraction n="0.600" ref="SiO2"/>
+        <fraction n="0.118" ref="Al2O3"/>
+        <fraction n="0.001" ref="Fe2O3"/>
+        <fraction n="0.224" ref="CaO"/>
+        <fraction n="0.034" ref="MgO"/>
+        <fraction n="0.010" ref="Na2O"/>
+        <fraction n="0.013" ref="TiO2"/>
+    </material>
+
+    <material name="FR4">
+        <D value="1.98281" unit="g/cm3"/>
+        <fraction n="0.47" ref="epoxy_resin"/>
+        <fraction n="0.53" ref="fibrous_glass"/>
+    </material>
+
+    <material name="LAr" formula="LAr">
+        <D value="1.40" />
+        <composite n="1" ref="argon"/>
+    </material>
+
+    <material name="ArGas" formula="ArGas">
+        <D value="0.00166" />
+        <composite n="1" ref="argon"/>
+    </material>
+
+    <material formula=" " name="Air">
+        <D value="0.001205" />
+        <fraction n="0.781154" ref="Nitrogen"/>
+        <fraction n="0.209476" ref="Oxygen"/>
+        <fraction n="0.00934" ref="Argon"/>
+    </material>
+
+    <material formula=" " name="G10">
+        <D value="1.7" />
+        <fraction n="0.2805" ref="Silicon"/>
+        <fraction n="0.3954" ref="Oxygen"/>
+        <fraction n="0.2990" ref="Carbon"/>
+        <fraction n="0.0251" ref="Hydrogen"/>
+    </material>
+
+    <material formula=" " name="Granite">
+        <D value="2.7" />
+        <fraction n="0.438" ref="Oxygen"/>
+        <fraction n="0.257" ref="Silicon"/>
+        <fraction n="0.222" ref="Sodium"/>
+        <fraction n="0.049" ref="Aluminum"/>
+        <fraction n="0.019" ref="iron"/>
+        <fraction n="0.015" ref="potassium"/>
+    </material>
+
+    <material formula=" " name="ShotRock">
+        <D value="2.7*0.6" />
+        <fraction n="0.438" ref="Oxygen"/>
+        <fraction n="0.257" ref="Silicon"/>
+        <fraction n="0.222" ref="Sodium"/>
+        <fraction n="0.049" ref="Aluminum"/>
+        <fraction n="0.019" ref="iron"/>
+        <fraction n="0.015" ref="potassium"/>
+    </material>
+
+    <material formula=" " name="Dirt">
+        <D value="1.7" />
+        <fraction n="0.438" ref="Oxygen"/>
+        <fraction n="0.257" ref="Silicon"/>
+        <fraction n="0.222" ref="Sodium"/>
+        <fraction n="0.049" ref="Aluminum"/>
+        <fraction n="0.019" ref="iron"/>
+        <fraction n="0.015" ref="potassium"/>
+    </material>
+
+    <material formula=" " name="Concrete">
+        <D value="2.3" />
+        <fraction n="0.530" ref="Oxygen"/>
+        <fraction n="0.335" ref="Silicon"/>
+        <fraction n="0.060" ref="calcium"/>
+        <fraction n="0.015" ref="Sodium"/>
+        <fraction n="0.020" ref="iron"/>
+        <fraction n="0.040" ref="Aluminum"/>
+    </material>
+
+    <material name="Water" formula="H2O">
+        <D value="1" />
+        <composite n="2" ref="Hydrogen"/>
+        <composite n="1" ref="Oxygen"/>
+    </material>
+
+    <material formula="Ti" name="Titanium">
+        <D value="4.506" />
+        <composite n="1" ref="Titanium"/>
+    </material>
+
+    <material name="TPB" formula="TPB">
+        <D value="1.40" />
+        <composite n="1" ref="argon"/>
+    </material>
+
+    <material name="Glass">
+        <D value="2.74351" unit="g/cm3"/>
+        <fraction n="0.600" ref="SiO2"/>
+        <fraction n="0.118" ref="Al2O3"/>
+        <fraction n="0.001" ref="Fe2O3"/>
+        <fraction n="0.224" ref="CaO"/>
+        <fraction n="0.034" ref="MgO"/>
+        <fraction n="0.010" ref="Na2O"/>
+        <fraction n="0.013" ref="TiO2"/>
+    </material>
+
+    <material name="Acrylic">
+        <D value="1.19" unit="g/cm3"/>
+        <fraction n="0.600" ref="Carbon"/>
+        <fraction n="0.320" ref="Oxygen"/>
+        <fraction n="0.080" ref="Hydrogen"/>
+    </material>
+
+</materials>
