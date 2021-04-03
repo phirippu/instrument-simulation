@@ -9,6 +9,7 @@
         <variable name="SiT" value="0.5" />
         <variable name="ShieldT" value="1" />
 
+        <variable name="x" value="1" />
     </define>
 
     <!--################################ Materials ##################################################-->
@@ -20,16 +21,17 @@
 
     <solids>
         <!--World-->
-        <box name="WorldBox" x="100" y="100" z="100" />
+        <box name="WorldBox" x="1000" y="100" z="100" />
 
          <!--The sensitive silicon chip -->
         <box name="SiChip" x="100" y="100" z="SiT" />
-        <!-- 100mm * 100mm * 0.5mm = 0.5 mm³ -->
-        <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams = 4.48e-6 kg -->
+        <!-- 100mm * 100mm * 0.5mm = 5000 mm³ = 5 cm³ -->
+        <!-- 8.960 g/cm³ * 5cm³ = 44.8 grams = 0.0448 kg -->
 
         <!--Shield -->
-        <box name="AluShield" x="100" y="100" z="ShieldT" />
-
+        <loop for="x" from="1" to="10" step="1">
+            <box name="AluShield[x]" x="100" y="100" z="ShieldT*x" />
+        </loop>
 
     </solids>
 
@@ -39,19 +41,19 @@
     <structure>
 
 
+        <loop for="x" from="1" to="10" step="1">
+            <volume name="Sivol[x]" >
+                <materialref ref="Silicon" />
+                <solidref ref="SiChip" />
+                <auxiliary auxtype="SensDet" auxvalue="Tracker"/>
+            </volume>
 
-        <volume name="Sivol" >
-            <materialref ref="Silicon" />
-            <solidref ref="SiChip" />
-            <auxiliary auxtype="SensDet" auxvalue="Tracker"/>
-            <auxiliary auxtype="Color" auxvalue="Blue"/>
-        </volume>
 
-        <volume name="AluShieldVol" >
-            <materialref ref="Aluminum" />
-            <solidref ref="AluShield" />
-        </volume>
-
+            <volume name="AluShieldVol[x]" >
+                <materialref ref="Aluminum" />
+                <solidref ref="AluShield[x]" />
+            </volume>
+        </loop>
 
         <!--################################ World ##################################################-->
 
@@ -59,16 +61,18 @@
             <materialref ref="Vacuum" />
             <solidref ref="WorldBox" />
 
+            <loop for="x" from="1" to="10" step="1">
+                <physvol>
+                    <volumeref ref="Sivol[x]" />
+                    <position name="Sipos[x]" x="100*x-550" y="0" z="SiT/2" />
+                </physvol>
 
-            <physvol>
-                <volumeref ref="Sivol" />
-                <position name="Sipos" x="0" y="0" z="SiT/2" />
-            </physvol>
 
-            <physvol>
-                <volumeref ref="AluShieldVol" />
-                <position name="ShieldPos" x="0" y="0" z="-ShieldT/2" />
-            </physvol>
+                <physvol>
+                    <volumeref ref="AluShieldVol[x]" />
+                    <position name="ShieldPos[x]" x="100*x-550" y="0" z="-ShieldT*x/2" />
+                </physvol>
+            </loop>
 
         </volume>
     </structure>
