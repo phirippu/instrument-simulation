@@ -7,7 +7,7 @@
     <define>
 
         <variable name="SiT" value="0.5" />
-        <variable name="ShieldT" value="10" />
+        <variable name="ShieldT" value="1" />
 
     </define>
 
@@ -20,15 +20,15 @@
 
     <solids>
         <!--World-->
-        <orb name="WorldSphere" r="110" />
+        <box name="WorldBox" x="100" y="100" z="100" />
 
          <!--The sensitive silicon chip -->
-        <box name="SiChip" x="1" y="1" z="SiT" />
-        <!-- 1mm * 1mm * 0.5mm = 0.5 mm³ -->
+        <box name="SiChip" x="100" y="100" z="SiT" />
+        <!-- 100mm * 100mm * 0.5mm = 0.5 mm³ -->
         <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams = 4.48e-6 kg -->
 
         <!--Shield -->
-        <box name="Outer" x="100" y="100" z="10" />
+        <box name="AluShield" x="100" y="100" z="ShieldT" />
 
 
     </solids>
@@ -47,9 +47,9 @@
             <auxiliary auxtype="Color" auxvalue="Blue"/>
         </volume>
 
-        <volume name="ShieldVol" >
+        <volume name="AluShieldVol" >
             <materialref ref="Aluminum" />
-            <solidref ref="ShieldBox" />
+            <solidref ref="AluShield" />
         </volume>
 
 
@@ -57,17 +57,17 @@
 
         <volume name="World" >
             <materialref ref="Vacuum" />
-            <solidref ref="WorldSphere" />
+            <solidref ref="WorldBox" />
 
 
             <physvol>
                 <volumeref ref="Sivol" />
-                <position name="Sipos" x="0" y="0" z="FR4T+CuT+SiT/2" />
+                <position name="Sipos" x="0" y="0" z="SiT/2" />
             </physvol>
 
             <physvol>
-                <volumeref ref="ShieldVol" />
-                <position name="ShieldPos" x="0" y="0" z="0" />
+                <volumeref ref="AluShieldVol" />
+                <position name="ShieldPos" x="0" y="0" z="-ShieldT/2" />
             </physvol>
 
         </volume>
