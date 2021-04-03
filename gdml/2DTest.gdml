@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE gdml [ <!ENTITY materials SYSTEM "materials.xml"> ]>
+<gdml xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../schema/gdml.xsd">
+
+    <!--################################ Variables ##################################################-->
+
+    <define>
+
+        <variable name="SiT" value="0.5" />
+        <variable name="ShieldT" value="10" />
+
+    </define>
+
+    <!--################################ Materials ##################################################-->
+
+    &materials;
+
+    <!--################################ Solids ##################################################-->
+
+
+    <solids>
+        <!--World-->
+        <orb name="WorldSphere" r="110" />
+
+         <!--The sensitive silicon chip -->
+        <box name="SiChip" x="1" y="1" z="SiT" />
+        <!-- 1mm * 1mm * 0.5mm = 0.5 mm³ -->
+        <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams = 4.48e-6 kg -->
+
+        <!--Shield -->
+        <box name="Outer" x="100" y="100" z="10" />
+
+
+    </solids>
+
+
+    <!--################################ Volumes ##################################################-->
+
+    <structure>
+
+
+
+        <volume name="Sivol" >
+            <materialref ref="Silicon" />
+            <solidref ref="SiChip" />
+            <auxiliary auxtype="SensDet" auxvalue="Tracker"/>
+            <auxiliary auxtype="Color" auxvalue="Blue"/>
+        </volume>
+
+        <volume name="ShieldVol" >
+            <materialref ref="Aluminum" />
+            <solidref ref="ShieldBox" />
+        </volume>
+
+
+        <!--################################ World ##################################################-->
+
+        <volume name="World" >
+            <materialref ref="Vacuum" />
+            <solidref ref="WorldSphere" />
+
+
+            <physvol>
+                <volumeref ref="Sivol" />
+                <position name="Sipos" x="0" y="0" z="FR4T+CuT+SiT/2" />
+            </physvol>
+
+            <physvol>
+                <volumeref ref="ShieldVol" />
+                <position name="ShieldPos" x="0" y="0" z="0" />
+            </physvol>
+
+        </volume>
+    </structure>
+
+    <setup name="Default" version="1.0" >
+        <world ref="World" />
+    </setup>
+</gdml>

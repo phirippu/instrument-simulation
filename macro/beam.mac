@@ -3,13 +3,21 @@
 # 8 - full macro-defined beam
 /gun/tune/beam 8
 
+########## For full 3D Test
+#/gps/pos/type Surface
+#/gps/pos/shape Sphere
+#/gps/pos/centre 0 0 0 mm
+#/gps/pos/radius 100 mm
+#/gps/ang/type cos
+#/gps/ang/surfnorm true
 
-/gps/pos/type Surface
-/gps/pos/shape Sphere
-/gps/pos/centre 0 0 0 mm
-/gps/pos/radius 10 mm
-/gps/ang/type cos
-/gps/ang/surfnorm true
+
+
+
+
+
+
+
 
 
 #/gun/energy 100 MeV

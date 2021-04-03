@@ -2,110 +2,142 @@
 <!DOCTYPE gdml [ <!ENTITY materials SYSTEM "materials.xml"> ]>
 <gdml xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../schema/gdml.xsd">
 
-  <!--################################ Variables ##################################################-->
+    <!--################################ Variables ##################################################-->
 
-  <define>
-    <variable name="PCBThick" value="1.6" />
-    <variable name="CuThick" value="0.15" />
-    <variable name="SiThick" value="0.5" />
-    <variable name="PMMAThick" value="1.5" />
-  </define>
+    <define>
+        <variable name="FR4T" value="1.6" />
+        <variable name="CuT" value="0.15" />
+        <variable name="SiT" value="0.5" />
+        <variable name="PMMAT" value="1.5" />
 
+        <variable name="ShieldT" value="10" />
+    </define>
 
-  <!--################################ Materials ##################################################-->
+    <!--################################ Materials ##################################################-->
 
-  &materials;
+    &materials;
 
-  <!--################################ Solids ##################################################-->
-
-
-  <solids>
-    <!--World-->
-    <orb name="WorldSphere" r="12" />
-
-    <!--FR-4 PCB-->
-    <box name="PCB" x="10" y="10" z="PCBThick" />
-
-    <!--Copper Layer on top of PCB-->
-    <box name="CuLayer" x="10" y="10" z="CuThick" />
-
-    <!--The sensitive silicon chip -->
-    <box name="SiChip" x="1" y="1" z="SiThick" />
-    <!-- 1mm * 1mm * 0.5mm = 0.5 mm³ -->
-    <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams = 4.48e-6 kg -->
-
-    <!--The PMMA top layer -->
-    <box name="PMMALayer" x="3" y="3" z="PMMAThick" />
-
-    <subtraction name="PMMAcover" >
-      <first ref="PMMALayer" />
-      <second ref="SiChip" />
-      <position name="Subpos" x="0" y="0" z="-(PMMAThick-SiThick)/2" />
-    </subtraction>
+    <!--################################ Solids ##################################################-->
 
 
-  </solids>
+    <solids>
+        <!--World-->
+        <orb name="WorldSphere" r="110" />
+
+        <!--FR-4 layer that is the basis for the PCB-->
+        <box name="FR4" x="90" y="90" z="FR4T" />
+
+        <!--Copper Layer on top of FR4-->
+        <box name="CuLayer" x="90" y="90" z="CuT" />
+
+        <!--The sensitive silicon chip -->
+        <box name="SiChip" x="1" y="1" z="SiT" />
+        <!-- 1mm * 1mm * 0.5mm = 0.5 mm³ -->
+        <!-- 8.960 g/cm³ * 0.5mm³ = 4.48 milligrams = 4.48e-6 kg -->
+
+        <!--The PMMA top layer -->
+        <box name="PMMALayer" x="3" y="3" z="PMMAT" />
+
+        <subtraction name="PMMAcover" >
+            <first ref="PMMALayer" />
+            <second ref="SiChip" />
+            <position name="Subpos" x="0" y="0" z="-(PMMAT-SiT)/2" />
+        </subtraction>
 
 
-  <!--################################ Volumes ##################################################-->
+        <!--Outer Shape of the Shield -->
+        <box name="Outer" x="100" y="100" z="100" />
 
-  <structure>
+        <!--Inner Shape of the Shield -->
+        <box name="Inner" x="90" y="90" z="90" />
 
-    <volume name="PCBvol" >
-      <materialref ref="G4_Si" />
-      <solidref ref="PCB" />
-    </volume>
-
-    <volume name="Cuvol" >
-      <materialref ref="G4_Cu" />
-      <solidref ref="CuLayer" />
-    </volume>
-
-    <volume name="Sivol" >
-      <materialref ref="G4_Si" />
-      <solidref ref="SiChip" />
-      <auxiliary auxtype="SensDet" auxvalue="Tracker"/>
-      <auxiliary auxtype="Color" auxvalue="Blue"/>
-    </volume>
-
-    <volume name="PMMAvol" >
-      <materialref ref="Acrylic" />
-      <solidref ref="PMMAcover" />
-    </volume>
+        <subtraction name="ShieldBox" >
+            <first ref="Outer" />
+            <second ref="Inner" />
+            <position name="InnerSubpos" x="0" y="0" z="0" />
+        </subtraction>
 
 
+    </solids>
 
 
-    <!--################################ World ##################################################-->
+    <!--################################ Volumes ##################################################-->
 
-    <volume name="World" >
-      <materialref ref="G4_Galactic" />
-      <solidref ref="WorldSphere" />
+    <structure>
 
-      <physvol>
-        <volumeref ref="PCBvol" />
-        <position name="PCBpos" x="0" y="0" z="PCBThick/2" />
-      </physvol>
+        <volume name="FR4vol" >
+            <materialref ref="FR4" />
+            <solidref ref="FR4" />
+        </volume>
 
-      <physvol>
-        <volumeref ref="Cuvol" />
-        <position name="Cupos" x="0" y="0" z="PCBThick+CuThick/2" />
-      </physvol>
+        <volume name="Cuvol" >
+            <materialref ref="Copper" />
+            <solidref ref="CuLayer" />
+        </volume>
 
-      <physvol>
-        <volumeref ref="Sivol" />
-        <position name="Sipos" x="0" y="0" z="PCBThick+CuThick+SiThick/2" />
-      </physvol>
+        <volume name="PCBvol" >
+            <physvol>
+                <volumeref ref="FR4vol" />
+                <position name="FR4pos" x="0" y="0" z="FR4T/2" />
+            </physvol>
 
-      <physvol>
-        <volumeref ref="PMMAvol" />
-        <position name="PMMApos" x="0" y="0" z="PCBThick+CuThick+PMMAThick/2" />
-      </physvol>
+            <physvol>
+                <volumeref ref="Cuvol" />
+                <position name="Cupos" x="0" y="0" z="FR4T+CuT/2" />
+            </physvol>
+        </volume>
 
-    </volume>
-  </structure>
 
-  <setup name="Default" version="1.0" >
-    <world ref="World" />
-  </setup>
+        <volume name="Sivol" >
+            <materialref ref="Silicon" />
+            <solidref ref="SiChip" />
+            <auxiliary auxtype="SensDet" auxvalue="Tracker"/>
+            <auxiliary auxtype="Color" auxvalue="Blue"/>
+        </volume>
+
+        <volume name="PMMAvol" >
+            <materialref ref="Acrylic" />
+            <solidref ref="PMMAcover" />
+        </volume>
+
+        <volume name="ShieldVol" >
+            <materialref ref="Aluminum" />
+            <solidref ref="ShieldBox" />
+        </volume>
+
+
+        <!--################################ World ##################################################-->
+
+        <volume name="World" >
+            <materialref ref="Vacuum" />
+            <solidref ref="WorldSphere" />
+
+
+            <physvol>
+                <volumeref ref="PCBvol" />
+                <position name="PCBpos" x="0" y="0" z="0" />
+            </physvol>
+
+            <physvol>
+                <volumeref ref="Sivol" />
+                <position name="Sipos" x="0" y="0" z="FR4T+CuT+SiT/2" />
+            </physvol>
+
+            <physvol>
+                <volumeref ref="PMMAvol" />
+                <position name="PMMApos" x="0" y="0" z="FR4T+CuT+PMMAT/2" />
+            </physvol>
+
+            <physvol>
+                <volumeref ref="ShieldVol" />
+                <position name="ShieldPos" x="0" y="0" z="0" />
+            </physvol>
+
+
+        </volume>
+    </structure>
+
+    <setup name="Default" version="1.0" >
+        <world ref="World" />
+    </setup>
 </gdml>
