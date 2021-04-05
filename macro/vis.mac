@@ -69,6 +69,6 @@
 
 
 
-/vis/multithreading/maxEventQueueSize 1000
-/vis/scene/endOfEventAction accumulate 1000
-/run/beamOn 1000
+/vis/multithreading/maxEventQueueSize 10000
+/vis/scene/endOfEventAction accumulate 10000
+/run/beamOn 10000

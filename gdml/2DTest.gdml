@@ -21,7 +21,7 @@
 
     <solids>
         <!--World-->
-        <box name="WorldBox" x="1000" y="100" z="100" />
+        <box name="WorldBox" x="10000" y="100" z="250" />
 
          <!--The sensitive silicon chip -->
         <box name="SiChip" x="100" y="100" z="SiT" />
@@ -29,7 +29,7 @@
         <!-- 8.960 g/cm³ * 5cm³ = 44.8 grams = 0.0448 kg -->
 
         <!--Shield -->
-        <loop for="x" from="1" to="10" step="1">
+        <loop for="x" from="1" to="100" step="1">
             <box name="AluShield[x]" x="100" y="100" z="ShieldT*x" />
         </loop>
 
@@ -41,7 +41,7 @@
     <structure>
 
 
-        <loop for="x" from="1" to="10" step="1">
+        <loop for="x" from="1" to="100" step="1">
             <volume name="Sivol[x]" >
                 <materialref ref="Silicon" />
                 <solidref ref="SiChip" />
@@ -61,16 +61,16 @@
             <materialref ref="Vacuum" />
             <solidref ref="WorldBox" />
 
-            <loop for="x" from="1" to="10" step="1">
+            <loop for="x" from="1" to="100" step="1">
                 <physvol>
                     <volumeref ref="Sivol[x]" />
-                    <position name="Sipos[x]" x="100*x-550" y="0" z="SiT/2" />
+                    <position name="Sipos[x]" x="100*x-5050" y="0" z="SiT/2+100" />
                 </physvol>
 
 
                 <physvol>
                     <volumeref ref="AluShieldVol[x]" />
-                    <position name="ShieldPos[x]" x="100*x-550" y="0" z="-ShieldT*x/2" />
+                    <position name="ShieldPos[x]" x="100*x-5050" y="0" z="-ShieldT*x/2+100" />
                 </physvol>
             </loop>
 
