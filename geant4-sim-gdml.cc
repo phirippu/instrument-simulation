@@ -32,7 +32,6 @@
  *
 **********************************************/
 
-#include "AaltoPhysicsList.hh"
 #include "AnalysisManager.hh"
 #include "DetectorConstruction.hh"
 #include "G4GDMLParser.hh"
@@ -76,7 +75,7 @@ void print_usage() {
 
 int main(int argc, char **argv) {
 
-    AaltoPhysicsList *phys = nullptr;
+
     G4Random::setTheEngine(new CLHEP::RanecuEngine);
     G4String physName = "HADRONTHERAPY_1";
     G4String strPart = G4String("geantino");
@@ -86,7 +85,7 @@ int main(int argc, char **argv) {
     G4bool visOpen = TRUE;
     G4bool massPrinted = FALSE;
     G4bool randomID = FALSE;
-    G4bool use_ftfp = FALSE;
+    G4bool use_ftfp = TRUE;
     G4UIExecutive *ui = nullptr;
     G4VisManager *visManager = nullptr;
     G4double particleBeamRadius = 10 * cm;
@@ -240,15 +239,17 @@ int main(int argc, char **argv) {
     runManager->SetUserInitialization(new DetectorConstruction(parser.GetWorldVolume(),
                                                                parser.GetWorldVolume()->GetLogicalVolume()));
 
-    if (use_ftfp) {
+/********************TEMPORARY FTFP Physics Workaround*********************/
+//    if (use_ftfp) {
         auto physics = new FTFP_BERT();
         runManager->SetUserInitialization(physics);
 
-    } else {
-        phys = new AaltoPhysicsList();
-        phys->AddPhysicsList(physName);
-        runManager->SetUserInitialization(phys);
-    }
+//    } else {
+//        phys = new AaltoPhysicsList();
+//        phys->AddPhysicsList(physName);
+//        runManager->SetUserInitialization(phys);
+//    }
+/**************************************************************************/
 
     output_ROOT_FileName.toLower();
     output_ROOT_FileName = output_ROOT_FileName.substr(0, output_ROOT_FileName.find(".root"));
