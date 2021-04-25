@@ -115,8 +115,7 @@ int main(int argc, char **argv) {
     CLHEP::HepRandom::setTheSeed(seed);
     G4Random::setTheSeed(seed);
 
-    //G4String gdml_filename = G4String("../gdml/main.gdml");
-    G4String gdml_filename = G4String("../gdml/2DTest.gdml");
+    G4String gdml_filename = G4String("../gdml/main.gdml");
     G4String output_ROOT_FileName = "output";
     G4String macro_filename = "../macro/run.mac";
 

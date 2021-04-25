@@ -4,19 +4,19 @@
 /gun/tune/beam 8
 
 ########## For full 3D Test
-#/gps/pos/type Surface
-#/gps/pos/shape Sphere
-#/gps/pos/centre 0 0 0 mm
-#/gps/pos/radius 100 mm
-#/gps/ang/type cos
-#/gps/ang/surfnorm true
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0 0 0 mm
+/gps/pos/radius 10 mm
+/gps/ang/type cos
+/gps/ang/surfnorm true
 
 ########## For 2D Test
-/gps/pos/type Beam
-/gps/pos/centre 0 0 -50 mm
-/gps/pos/halfx 5000 mm
-/gps/pos/halfy 50 mm
-/gps/direction 0 0 1
+#/gps/pos/type Beam
+#/gps/pos/centre 0 0 -50 mm
+#/gps/pos/halfx 5000 mm
+#/gps/pos/halfy 50 mm
+#/gps/direction 0 0 1
 
 
 

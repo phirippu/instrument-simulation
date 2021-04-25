@@ -15,14 +15,14 @@
 #
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:
-/vis/viewer/set/autoRefresh false
-/vis/verbose errors
+#/vis/viewer/set/autoRefresh false
+#/vis/verbose errors
 #
 # Draw geometry:
 /vis/drawVolume
 #
 # Specify view angle:
-#/vis/viewer/set/viewpointThetaPhi 90. 0.
+/vis/viewer/set/viewpointThetaPhi -45. 270.
 #
 # Specify zoom value:
 #/vis/viewer/zoom .4
@@ -35,14 +35,14 @@
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
-/vis/scene/add/trajectories smooth
-/vis/modeling/trajectories/create/drawByCharge
-/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
-/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+/vis/scene/add/trajectories #smooth
+#/vis/modeling/trajectories/create/drawByCharge
+#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+#/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
 #
 # Draw hits at end of event:
-#/vis/scene/add/hits
+/vis/scene/add/hits
 #
 # To draw only gammas:
 #/vis/filtering/trajectories/create/particleFilter
@@ -54,11 +54,12 @@
 #
 # Many other options are available with /vis/modeling and /vis/filtering.
 # For example, to select colour by particle ID:
-#/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/create/drawByParticleID
 #/vis/modeling/trajectories/drawByParticleID-0/set e- blue
 #
 # To superimpose all of the events from a given run:
-/vis/scene/endOfEventAction accumulate
+/vis/scene/endOfEventAction accumulate 10000
+/vis/scene/endOfRunAction refresh
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
@@ -70,5 +71,4 @@
 
 
 /vis/multithreading/maxEventQueueSize 10000
-/vis/scene/endOfEventAction accumulate 10000
 /run/beamOn 10000
