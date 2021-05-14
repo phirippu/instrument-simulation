@@ -4,9 +4,10 @@
 /gun/tune/beam 8
 /gun/tune/axis 1 0 0
 
-#/gps/ene/type Gauss
-#/gps/ene/mono 100 MeV
-#/gps/ene/sigma 1 MeV
+/gps/ene/type Pow
+/gps/ene/min 100 MeV
+/gps/ene/max 200 MeV
+/gps/ene/alpha 0
 
 /gps/pos/type Plane
 /gps/pos/shape Circle

@@ -29,11 +29,16 @@ void RunAction::BeginOfRunAction(const G4Run *run) {
     auto analysisManager = G4AnalysisManager::Instance();
     miscIdx = analysisManager->CreateNtuple("Simulation Data", "Misc parameters");
     pcol = analysisManager->CreateNtupleSColumn(miscIdx, "Particle");
+    npartcol = analysisManager->CreateNtupleDColumn(miscIdx, "Particle Number");
     dcol = analysisManager->CreateNtupleSColumn(miscIdx, "Distribution");
     scol = analysisManager->CreateNtupleSColumn(miscIdx, "Shape");
     rcol = analysisManager->CreateNtupleDColumn(miscIdx, "Radius");
     ecol = analysisManager->CreateNtupleSColumn(miscIdx, "Energy Type");
     acol = analysisManager->CreateNtupleSColumn(miscIdx, "Angular Distribution");
+
+    emincol = analysisManager->CreateNtupleDColumn(miscIdx, "Energy Min");
+    emidcol = analysisManager->CreateNtupleDColumn(miscIdx, "Energy Mid");
+    emaxcol = analysisManager->CreateNtupleDColumn(miscIdx, "Energy Max");
 
     mxtcol = analysisManager->CreateNtupleDColumn(miscIdx, "Max Theta");
     mxpcol = analysisManager->CreateNtupleDColumn(miscIdx, "Max Phi");
@@ -43,6 +48,11 @@ void RunAction::BeginOfRunAction(const G4Run *run) {
     xcol = analysisManager->CreateNtupleDColumn(miscIdx, "X");
     ycol = analysisManager->CreateNtupleDColumn(miscIdx, "Y");
     zcol = analysisManager->CreateNtupleDColumn(miscIdx, "Z");
+
+    xacol = analysisManager->CreateNtupleDColumn(miscIdx, "Xa");
+    yacol = analysisManager->CreateNtupleDColumn(miscIdx, "Ya");
+    zacol = analysisManager->CreateNtupleDColumn(miscIdx, "Za");
+
 
     analysisManager->FinishNtuple(miscIdx);
     b_tuple_written = FALSE;
@@ -55,37 +65,51 @@ void RunAction::EndOfRunAction(const G4Run *run) {
 
     const auto generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
     if ((generatorAction != nullptr) && !b_tuple_written) {
-        auto particle_name = generatorAction->GetParticleGun()->GetParticleDefinition()->GetParticleName();
-        auto dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetSourcePosType();
-        auto shape_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetPosDisType();
-        auto dist_radius = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetRadius();
-        auto energy_dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEnergyDisType();
-        auto angular_dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetDistType();
-        auto angular_max_phi = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMaxPhi();
-        auto angular_max_theta = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMaxTheta();
-        auto angular_min_phi = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMinPhi();
-        auto angular_min_theta = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMinTheta();
-        auto angular_direction = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetDirection();
+        particle_name = generatorAction->GetParticleGun()->GetParticleDefinition()->GetParticleName();
+        dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetSourcePosType();
+        shape_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetPosDisType();
+        dist_radius = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetRadius();
+        energy_dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEnergyDisType();
+        angular_dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetDistType();
+        angular_max_phi = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMaxPhi();
+        angular_max_theta = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMaxTheta();
+        angular_min_phi = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMinPhi();
+        angular_min_theta = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetMinTheta();
+        angular_direction = generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetDirection();
+        axis_direction = generatorAction->GetPrimaryAxis();
 
-        analysisManager->FillNtupleSColumn(miscIdx, pcol, particle_name);
-        analysisManager->FillNtupleSColumn(miscIdx, dcol, dist_type);
-        analysisManager->FillNtupleSColumn(miscIdx, scol, shape_type);
-        analysisManager->FillNtupleDColumn(miscIdx, rcol, dist_radius);
-        analysisManager->FillNtupleSColumn(miscIdx, ecol, energy_dist_type);
-        analysisManager->FillNtupleSColumn(miscIdx, acol, angular_dist_type);
-        analysisManager->FillNtupleDColumn(miscIdx, mxtcol, angular_max_theta);
-        analysisManager->FillNtupleDColumn(miscIdx, mxpcol, angular_max_phi);
-        analysisManager->FillNtupleDColumn(miscIdx, mitcol, angular_min_theta);
-        analysisManager->FillNtupleDColumn(miscIdx, mipcol, angular_min_phi);
-        analysisManager->FillNtupleDColumn(miscIdx, xcol, angular_direction.x());
-        analysisManager->FillNtupleDColumn(miscIdx, ycol, angular_direction.y());
-        analysisManager->FillNtupleDColumn(miscIdx, zcol, angular_direction.z());
-        analysisManager->AddNtupleRow(miscIdx);
-        b_tuple_written = TRUE;
+        emin_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEmin();
+        emax_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEmax();
+        emid_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEzero();
     }
+
+    analysisManager->FillNtupleSColumn(miscIdx, pcol, particle_name);
+    analysisManager->FillNtupleDColumn(miscIdx, npartcol, nofEvents);
+    analysisManager->FillNtupleSColumn(miscIdx, dcol, dist_type);
+    analysisManager->FillNtupleSColumn(miscIdx, scol, shape_type);
+    analysisManager->FillNtupleDColumn(miscIdx, rcol, dist_radius);
+    analysisManager->FillNtupleSColumn(miscIdx, ecol, energy_dist_type);
+    analysisManager->FillNtupleSColumn(miscIdx, acol, angular_dist_type);
+
+    analysisManager->FillNtupleDColumn(miscIdx, emincol, emin_gun);
+    analysisManager->FillNtupleDColumn(miscIdx, emidcol, emid_gun);
+    analysisManager->FillNtupleDColumn(miscIdx, emaxcol, emax_gun);
+
+    analysisManager->FillNtupleDColumn(miscIdx, mxtcol, angular_max_theta);
+    analysisManager->FillNtupleDColumn(miscIdx, mxpcol, angular_max_phi);
+    analysisManager->FillNtupleDColumn(miscIdx, mitcol, angular_min_theta);
+    analysisManager->FillNtupleDColumn(miscIdx, mipcol, angular_min_phi);
+    analysisManager->FillNtupleDColumn(miscIdx, xcol, angular_direction.x());
+    analysisManager->FillNtupleDColumn(miscIdx, ycol, angular_direction.y());
+    analysisManager->FillNtupleDColumn(miscIdx, zcol, angular_direction.z());
+    analysisManager->FillNtupleDColumn(miscIdx, xacol, axis_direction.x());
+    analysisManager->FillNtupleDColumn(miscIdx, yacol, axis_direction.y());
+    analysisManager->FillNtupleDColumn(miscIdx, zacol, axis_direction.z());
+    analysisManager->AddNtupleRow(miscIdx);
     analysisManager->Write();
 
     if (IsMaster()) {
+//        b_tuple_written = TRUE;
         G4cout << G4endl << "[RunAction] --------------------End of Global Run-----------------------" << G4endl
                << "[RunAction]  The run was " << nofEvents << " events " << G4endl;
         if (analysisManager->IsOpenFile()) { analysisManager->CloseFile(); }
