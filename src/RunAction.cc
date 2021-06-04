@@ -83,29 +83,31 @@ void RunAction::EndOfRunAction(const G4Run *run) {
         emid_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEzero();
     }
 
-    analysisManager->FillNtupleSColumn(miscIdx, pcol, particle_name);
-    analysisManager->FillNtupleDColumn(miscIdx, npartcol, nofEvents);
-    analysisManager->FillNtupleSColumn(miscIdx, dcol, dist_type);
-    analysisManager->FillNtupleSColumn(miscIdx, scol, shape_type);
-    analysisManager->FillNtupleDColumn(miscIdx, rcol, dist_radius);
-    analysisManager->FillNtupleSColumn(miscIdx, ecol, energy_dist_type);
-    analysisManager->FillNtupleSColumn(miscIdx, acol, angular_dist_type);
+    if (!IsMaster()) {
+        analysisManager->FillNtupleSColumn(miscIdx, pcol, particle_name);
+        analysisManager->FillNtupleDColumn(miscIdx, npartcol, nofEvents);
+        analysisManager->FillNtupleSColumn(miscIdx, dcol, dist_type);
+        analysisManager->FillNtupleSColumn(miscIdx, scol, shape_type);
+        analysisManager->FillNtupleDColumn(miscIdx, rcol, dist_radius);
+        analysisManager->FillNtupleSColumn(miscIdx, ecol, energy_dist_type);
+        analysisManager->FillNtupleSColumn(miscIdx, acol, angular_dist_type);
 
-    analysisManager->FillNtupleDColumn(miscIdx, emincol, emin_gun);
-    analysisManager->FillNtupleDColumn(miscIdx, emidcol, emid_gun);
-    analysisManager->FillNtupleDColumn(miscIdx, emaxcol, emax_gun);
+        analysisManager->FillNtupleDColumn(miscIdx, emincol, emin_gun);
+        analysisManager->FillNtupleDColumn(miscIdx, emidcol, emid_gun);
+        analysisManager->FillNtupleDColumn(miscIdx, emaxcol, emax_gun);
 
-    analysisManager->FillNtupleDColumn(miscIdx, mxtcol, angular_max_theta);
-    analysisManager->FillNtupleDColumn(miscIdx, mxpcol, angular_max_phi);
-    analysisManager->FillNtupleDColumn(miscIdx, mitcol, angular_min_theta);
-    analysisManager->FillNtupleDColumn(miscIdx, mipcol, angular_min_phi);
-    analysisManager->FillNtupleDColumn(miscIdx, xcol, angular_direction.x());
-    analysisManager->FillNtupleDColumn(miscIdx, ycol, angular_direction.y());
-    analysisManager->FillNtupleDColumn(miscIdx, zcol, angular_direction.z());
-    analysisManager->FillNtupleDColumn(miscIdx, xacol, axis_direction.x());
-    analysisManager->FillNtupleDColumn(miscIdx, yacol, axis_direction.y());
-    analysisManager->FillNtupleDColumn(miscIdx, zacol, axis_direction.z());
-    analysisManager->AddNtupleRow(miscIdx);
+        analysisManager->FillNtupleDColumn(miscIdx, mxtcol, angular_max_theta);
+        analysisManager->FillNtupleDColumn(miscIdx, mxpcol, angular_max_phi);
+        analysisManager->FillNtupleDColumn(miscIdx, mitcol, angular_min_theta);
+        analysisManager->FillNtupleDColumn(miscIdx, mipcol, angular_min_phi);
+        analysisManager->FillNtupleDColumn(miscIdx, xcol, angular_direction.x());
+        analysisManager->FillNtupleDColumn(miscIdx, ycol, angular_direction.y());
+        analysisManager->FillNtupleDColumn(miscIdx, zcol, angular_direction.z());
+        analysisManager->FillNtupleDColumn(miscIdx, xacol, axis_direction.x());
+        analysisManager->FillNtupleDColumn(miscIdx, yacol, axis_direction.y());
+        analysisManager->FillNtupleDColumn(miscIdx, zacol, axis_direction.z());
+        analysisManager->AddNtupleRow(miscIdx);
+    }
     analysisManager->Write();
 
     if (IsMaster()) {

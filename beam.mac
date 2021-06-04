@@ -5,18 +5,18 @@
 /gun/tune/axis 1 0 0
 
 /gps/ene/type Pow
-/gps/ene/min 100 MeV
-/gps/ene/max 200 MeV
+/gps/ene/min 1000 MeV
+/gps/ene/max 2000 MeV
 /gps/ene/alpha 0
 
 /gps/pos/type Plane
 /gps/pos/shape Circle
 /gps/pos/centre -100 0 -17.5 mm
-/gps/pos/rot1 0 0 1 cm
-/gps/pos/radius 0.1 cm
+/gps/pos/rot1 1 0 0 cm
+/gps/pos/radius 1 cm
 /gps/ang/type beam2d
 /gps/ang/surfnorm true
-/gps/direction 1 0 0
+/gps/direction 0 0 1
 
 
 
