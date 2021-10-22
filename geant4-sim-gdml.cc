@@ -85,6 +85,7 @@ int main(int argc, char **argv) {
     G4bool visOpen = TRUE;
     G4bool massPrinted = FALSE;
     G4bool randomID = FALSE;
+    G4bool arbitrary_energy_spectrum = FALSE;
     G4bool use_ftfp = TRUE;
     G4UIExecutive *ui = nullptr;
     G4VisManager *visManager = nullptr;
@@ -131,6 +132,7 @@ int main(int argc, char **argv) {
                     {"powerlaw",     optional_argument, nullptr, 'l'},
                     {"alpha",        optional_argument, nullptr, 'a'},
                     {"mono",         optional_argument, nullptr, 'm'},
+                    {"arbitrary",    optional_argument, nullptr, 'b'},
                     {"sigma",        optional_argument, nullptr, 's'},
                     {"quick",        optional_argument, nullptr, 'q'},
                     {"randomid",     optional_argument, nullptr, 'r'},
@@ -139,7 +141,7 @@ int main(int argc, char **argv) {
                     {"printstat",    optional_argument, nullptr, 'z'},
                     {nullptr, 0,                        nullptr, 0}
             };
-    const char *const short_options = ":a:c:e:y:glmi:n:o:p:qrs:x:z";
+    const char *const short_options = ":a:c:e:y:glbmi:n:o:p:qrs:x:z";
     int opt;
     while ((opt = getopt_long(argc, argv, short_options, long_options, nullptr)) != -1) {
         switch (opt) {
@@ -170,6 +172,10 @@ int main(int argc, char **argv) {
             case 'l':
                 set_and_use_powerlaw = TRUE;
                 G4cout << "Power law set " << set_and_use_powerlaw << G4endl;
+                break;
+            case 'b':
+                arbitrary_energy_spectrum = TRUE;
+                G4cout << "Arbitrary spectrum set " << arbitrary_energy_spectrum << G4endl;
                 break;
             case 'm':
                 set_and_use_monoenergy = TRUE;
@@ -241,8 +247,8 @@ int main(int argc, char **argv) {
 
 /********************TEMPORARY FTFP Physics Workaround*********************/
 //    if (use_ftfp) {
-        auto physics = new FTFP_BERT();
-        runManager->SetUserInitialization(physics);
+    auto physics = new FTFP_BERT();
+    runManager->SetUserInitialization(physics);
 
 //    } else {
 //        phys = new AaltoPhysicsList();
@@ -268,11 +274,13 @@ int main(int argc, char **argv) {
 
     G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
-    // set default mono source in case no other parameters override the behavior
-    UImanager->ApplyCommand("/gps/particle " + strPart);
-    UImanager->ApplyCommand("/gps/ene/mono " + G4UIcommand::ConvertToString(particleEnergyMeV_E1) + " MeV");
     UImanager->ApplyCommand("/control/execute " + macro_filename);
 
+    if (arbitrary_energy_spectrum == FALSE) {
+        // set default mono source in case no other parameters override the behavior
+        UImanager->ApplyCommand("/gps/particle " + strPart);
+        UImanager->ApplyCommand("/gps/ene/mono " + G4UIcommand::ConvertToString(particleEnergyMeV_E1) + " MeV");
+    }
     if (set_and_use_monoenergy) { // override whatever macro sets
         UImanager->ApplyCommand("/gps/ene/mono " + G4UIcommand::ConvertToString(particleEnergyMeV_E1) + " MeV");
     } else if (set_and_use_powerlaw) {

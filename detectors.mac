@@ -1,2 +1,11 @@
-/detector/add SiVol
-/detector/add AlVol
+/detector/add AIN
+/detector/add BIN
+/detector/add CIN
+/detector/add DIN
+/detector/add EIN
+/detector/add AAC
+/detector/add BAC
+/detector/add CAC
+/detector/add DAC
+/detector/add EAC
+/detector/add Scintillator
