@@ -32,6 +32,7 @@
  *
 **********************************************/
 
+#include "G4RunManagerFactory.hh"
 #include "AnalysisManager.hh"
 #include "DetectorConstruction.hh"
 #include "G4GDMLParser.hh"
@@ -98,6 +99,7 @@ int main(int argc, char **argv) {
     G4double powerlaw_alpha = 0;
     G4int nThreads = G4Threading::G4GetNumberOfCores();
     G4int particlesNumber = 1;
+    G4GDMLParser g4GdmlParser;
     char *ptr;
 
     G4Random::setTheEngine(new CLHEP::RanecuEngine);
@@ -254,31 +256,6 @@ int main(int argc, char **argv) {
     }
 
     G4cout << "[INFO] Will use GDML file name " << gdml_filename << G4endl;
-    G4GDMLParser parser;
-    parser.Read(gdml_filename);
-    if (visOpen) {
-        ui = new G4UIExecutive(argc, argv);
-    }
-
-#ifdef G4MULTITHREADED
-    auto *runManager = new G4MTRunManager;
-    if (nThreads > 0) runManager->SetNumberOfThreads(nThreads);
-#else
-    G4RunManager* runManager = new G4RunManager;
-#endif
-
-    runManager->SetUserInitialization(new DetectorConstruction(parser.GetWorldVolume(),
-                                                               parser.GetWorldVolume()->GetLogicalVolume(),
-                                                               stepSizeMicrons));
-
-    if (use_ftfp) {
-        auto physics = new FTFP_BERT();
-        runManager->SetUserInitialization(physics);
-    } else {
-        auto physics = new QGSP_BERT_HP();
-        runManager->SetUserInitialization(physics);
-    }
-
 
     output_ROOT_FileName.toLower();
     output_ROOT_FileName = output_ROOT_FileName.substr(0, output_ROOT_FileName.find(".root"));
@@ -286,6 +263,28 @@ int main(int argc, char **argv) {
         output_ROOT_FileName = output_ROOT_FileName + "_0x" + (boost::format("%016x") % seed).str() + ".root";
     }
     G4cout << "[INFO] Will use output file name " << output_ROOT_FileName << G4endl;
+
+    g4GdmlParser.Read(gdml_filename);
+    if (visOpen) {
+        ui = new G4UIExecutive(argc, argv);
+    }
+
+#ifdef G4MULTITHREADED
+    auto runManager = G4RunManagerFactory::CreateRunManager();
+    if (nThreads > 0) runManager->SetNumberOfThreads(nThreads);
+#else
+    G4RunManager* runManager = new G4RunManager;
+#endif
+
+    runManager->SetUserInitialization(new DetectorConstruction(g4GdmlParser.GetWorldVolume(),
+                                                               g4GdmlParser.GetWorldVolume()->GetLogicalVolume(),
+                                                               stepSizeMicrons));
+
+    if (use_ftfp) {
+        runManager->SetUserInitialization(new FTFP_BERT);
+    } else {
+        runManager->SetUserInitialization(new QGSP_BERT_HP);
+    }
 
     runManager->SetUserInitialization(new ActionInitialization(particleBeamRadius, output_ROOT_FileName));
     runManager->Initialize();
@@ -339,7 +338,8 @@ int main(int argc, char **argv) {
     } else {
         G4cout << "[INFO] Batch mode run. Nparticles " << particlesNumber << G4endl;
         UImanager->SetVerboseLevel(0);
-        UImanager->ApplyCommand(G4String("/run/beamOn ") + G4UIcommand::ConvertToString(particlesNumber));
+        runManager->BeamOn(particlesNumber);
+//        UImanager->ApplyCommand(G4String("/run/beamOn ") + G4UIcommand::ConvertToString(particlesNumber));
     }
 
     auto analysisManager = G4AnalysisManager::Instance();

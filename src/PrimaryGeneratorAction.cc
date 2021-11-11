@@ -168,7 +168,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
 //    G4cerr << gun->GetParticleEnergy()<< "MeV"<< G4endl ;
 //    gun->GetParticleDefinition()->DumpTable();
 //    G4cerr << << "MeV"<< G4endl ;
-//    gun->GeneratePrimaryVertex(anEvent);
+    gun->GeneratePrimaryVertex(anEvent);
 
 }
 
