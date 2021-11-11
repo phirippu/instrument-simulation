@@ -12,7 +12,6 @@
 #include <valarray>
 
 
-
 ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
     auto run = G4RunManager::GetRunManager()->GetCurrentRun();
     G4String suffix = run ? std::to_string(run->GetRunID()) : "0";
@@ -23,7 +22,7 @@ ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
     G4cout << "[ThreadRun] Create" << G4endl;
     dConstruction = dynamic_cast<const DetectorConstruction *>((G4RunManager::GetRunManager())->GetUserDetectorConstruction());
     sdCollection.clear();
-    for (const auto &record : dConstruction->listDetectorNames) {
+    for (const auto &record: dConstruction->listDetectorNames) {
         const auto &detName = std::get<1>(record);
         auto detObject = G4SDManager::GetSDMpointer()->FindSensitiveDetector(detName, true);
         sdCollection.push_back(dynamic_cast<SensitiveDetector *>(detObject));
@@ -40,6 +39,8 @@ ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
     };
     analysisManager->CreateNtupleDColumn(iNtupleIdx, "Gun_energy_MeV");
     analysisManager->CreateNtupleDColumn(iNtupleIdx, "Gun_angle_deg");
+    analysisManager->CreateNtupleDColumn(iNtupleIdx, "Gun_theta_deg");
+    analysisManager->CreateNtupleDColumn(iNtupleIdx, "Gun_phi_deg");
     analysisManager->FinishNtuple(iNtupleIdx);
 
     if (!analysisManager->IsOpenFile()) {
@@ -50,6 +51,7 @@ ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
 
 void ThreadRun::RecordEvent(const G4Event *aEvent) {
     G4double angleGun = 0, energyGun = 0;
+    G4double thetaGun = 0, phiGun = 0;
     G4int column_index = 0;
     const G4int data_length = sdCollection.size();
     std::valarray<G4double> deposited_energies;
@@ -60,10 +62,11 @@ void ThreadRun::RecordEvent(const G4Event *aEvent) {
     if (data_length > 0) {
         const auto generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
         if (generatorAction != nullptr) {
-            angleGun =
-                    generatorAction->GetParticleGun()->GetParticleMomentumDirection().angle(
-                            generatorAction->GetPrimaryAxis()) / deg;
+            auto particle_direction = generatorAction->GetParticleGun()->GetParticleMomentumDirection();
+            angleGun = particle_direction.angle(generatorAction->GetPrimaryAxis()) / deg;
             angleGun = fabs(angleGun);
+            thetaGun = particle_direction.getTheta() / CLHEP::degree;
+            phiGun = particle_direction.getPhi() / CLHEP::degree;
             energyGun = generatorAction->GetParticleGun()->GetParticleEnergy();
         }
         deposited_energies.resize(data_length);
@@ -74,12 +77,14 @@ void ThreadRun::RecordEvent(const G4Event *aEvent) {
         }
         column_index = 0;
         if (deposited_energies.sum() > 0) {
-            for (auto &x:deposited_energies) { analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, x); }
+            for (auto &x: deposited_energies) { analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, x); }
             for (auto &detector_record: sdCollection) {
                 analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, detector_record->GetESecondary() / MeV);
             }
             analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, energyGun);
-            analysisManager->FillNtupleDColumn(iNtupleIdx, column_index, angleGun);
+            analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, angleGun);
+            analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, thetaGun);
+            analysisManager->FillNtupleDColumn(iNtupleIdx, column_index, phiGun);
             analysisManager->AddNtupleRow(iNtupleIdx);
         }
         for (auto &detector_record: sdCollection) {
