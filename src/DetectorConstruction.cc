@@ -13,9 +13,9 @@ void DetectorConstruction::ConstructSDandField() {
     // Detectors are added here
     G4cout << "ConstructSDandField" << G4endl;
     G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
-    for (const auto &record : listDetectorNames) {
-        const auto& detName = std::get<1>(record);
-        const auto& volName = std::get<2>(record);
+    for (const auto &record: listDetectorNames) {
+        const auto &detName = std::get<1>(record);
+        const auto &volName = std::get<2>(record);
         if (G4SDManager::GetSDMpointer()->FindSensitiveDetector(detName, false)) {
             G4cerr << "Detector FOUND! It should not happen.\n" << G4endl;
         } else {
@@ -23,15 +23,18 @@ void DetectorConstruction::ConstructSDandField() {
             auto sdMFD = new SensitiveDetector(detName);
             G4SDManager::GetSDMpointer()->AddNewDetector(sdMFD);
             SetSensitiveDetector(volName, sdMFD);
+            if (fUserStepLimit) {
+                logical_volume_store->GetVolume(volName, true)->SetUserLimits(fUserStepLimit);
+            }
         }
     }
 }
 
 G4VPhysicalVolume *DetectorConstruction::Construct() {
     std::vector<G4LogicalVolume *>::const_iterator lvciter;
-    for (lvciter = lvs->begin(); lvciter != lvs->end(); lvciter++) {
+    for (lvciter = logical_volume_store->begin(); lvciter != logical_volume_store->end(); lvciter++) {
         if ((*lvciter)->GetName().contains("target")) {
-            (*lvciter)->SetUserLimits(fTinyStepLimit);
+            (*lvciter)->SetUserLimits(fUserStepLimit);
 //            G4cerr << "/detector/add " << (*lvciter)->GetName() << G4endl;
         }
     }
@@ -39,14 +42,21 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
     return pvWorld;
 }
 
-DetectorConstruction::DetectorConstruction(G4VPhysicalVolume *setWorld, G4LogicalVolume *LV) {
+DetectorConstruction::DetectorConstruction(G4VPhysicalVolume *setWorld, G4LogicalVolume *LV, G4double stepSize) {
+    G4double stepSizePhysUnits;
+
     pvWorld = setWorld;
     lvWorld = LV;
     iDetectorCount = 0;
     jDetectorCount = 0;
-    G4double tiny10um = 0.01 * mm;
-    fTinyStepLimit = new G4UserLimits(tiny10um);
-    lvs = G4LogicalVolumeStore::GetInstance();
+
+    stepSizePhysUnits = stepSize * 0.001 * mm;
+    if (stepSizePhysUnits > 0) {
+        fUserStepLimit = new G4UserLimits(stepSizePhysUnits);
+    } else {
+        fUserStepLimit = nullptr;
+    }
+    logical_volume_store = G4LogicalVolumeStore::GetInstance();
     fMessenger = new DetectorConstructionMessenger(this);
 }
 
@@ -57,7 +67,7 @@ void DetectorConstruction::InstallDetector(const G4String &log_volume_name, cons
 }
 
 DetectorConstruction::~DetectorConstruction() {
-    delete fTinyStepLimit;
+    delete fUserStepLimit;
     delete fMessenger;
 
     listDetectorNames.clear();
@@ -68,7 +78,7 @@ void DetectorConstruction::ListDetectors() {
         G4cout << "Detector list empty." << G4endl;
     } else {
         G4cout << "Detector ID\tName\tLogVolName" << G4endl;
-        for (const auto &record : listDetectorNames) {
+        for (const auto &record: listDetectorNames) {
             G4cout << std::get<0>(record) << "\t"
                    << std::get<1>(record) << "\t"
                    << std::get<2>(record) << G4endl;

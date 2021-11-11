@@ -39,6 +39,7 @@
 #include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
+#include "geant4-sim-gdml.h"
 #include <ActionInitialization.hh>
 #include <G4MTRunManager.hh>
 #include <FTFP_BERT.hh>
@@ -48,6 +49,7 @@
 #include <vector>
 #include <getopt.h>
 #include <boost/format.hpp>
+#include <QGSP_BERT_HP.hh>
 
 G4bool b_tuple_written;
 
@@ -61,10 +63,10 @@ void print_usage() {
            << "-i [--inputfile] <input gdml file : mandatory>" << G4endl
            << "-l [--powerlaw] use powerlaw distribution" << G4endl
            << "-m [--mono] use monoenergetic beam" << G4endl
-           << "-n <number of particles to be simulated>" << G4endl
+           << "-n [--partnum] <number of particles to be simulated>" << G4endl
            << "-o [--output] <output file name [default:output.root]>" << G4endl
            << "-p [--particle] <particle name [default:geantino]>" << G4endl
-           << "-q [--quick] enable quick physics (standard EM)" << G4endl
+           << "-q [--quick] enable FTFP physics" << G4endl
            << "-r [--randomid] enable random seed printed as the output suffix" << G4endl
            << "-s [--sigma] <gaussian sigma, MeV>" << G4endl
            << "-x [--execute] <macro file name>" << G4endl
@@ -77,7 +79,6 @@ int main(int argc, char **argv) {
 
 
     G4Random::setTheEngine(new CLHEP::RanecuEngine);
-    G4String physName = "HADRONTHERAPY_1";
     G4String strPart = G4String("geantino");
     G4bool set_and_use_gaussian = FALSE;
     G4bool set_and_use_monoenergy = FALSE;
@@ -86,10 +87,11 @@ int main(int argc, char **argv) {
     G4bool massPrinted = FALSE;
     G4bool randomID = FALSE;
     G4bool arbitrary_energy_spectrum = FALSE;
-    G4bool use_ftfp = TRUE;
+    G4bool use_ftfp = FALSE;
     G4UIExecutive *ui = nullptr;
     G4VisManager *visManager = nullptr;
     G4double particleBeamRadius = 10 * cm;
+    G4double stepSizeMicrons = 0.0;
     G4double particleEnergyMeV_E1 = 0.001;
     G4double particleEnergyMeV_E2 = 0.001;
     G4double particle_sigma = 0.001;
@@ -120,98 +122,121 @@ int main(int argc, char **argv) {
     G4String output_ROOT_FileName = "output";
     G4String macro_filename = "run.mac";
 
+
     static struct option long_options[] =
             {
-                    {"particle",     optional_argument, nullptr, 'p'},
-                    {"output",       optional_argument, nullptr, 'o'},
-                    {"threads",      optional_argument, nullptr, 'c'},
-                    {"energylow",    optional_argument, nullptr, 'e'},
-                    {"energycenter", optional_argument, nullptr, 'e'},
-                    {"energyhigh",   optional_argument, nullptr, 'y'},
-                    {"gaussian",     optional_argument, nullptr, 'g'},
-                    {"powerlaw",     optional_argument, nullptr, 'l'},
-                    {"alpha",        optional_argument, nullptr, 'a'},
-                    {"mono",         optional_argument, nullptr, 'm'},
-                    {"arbitrary",    optional_argument, nullptr, 'b'},
-                    {"sigma",        optional_argument, nullptr, 's'},
-                    {"quick",        optional_argument, nullptr, 'q'},
-                    {"randomid",     optional_argument, nullptr, 'r'},
-                    {"inputfile",    required_argument, nullptr, 'i'},
-                    {"execute",      optional_argument, nullptr, 'x'},
-                    {"printstat",    optional_argument, nullptr, 'z'},
+                    {"partnum",      optional_argument, nullptr, PARTICLE_NUMBER_OPT},
+                    {"particle",     optional_argument, nullptr, PARTICLE_NAME_OPT},
+                    {"output",       optional_argument, nullptr, OUTPUT_NAME_OPT},
+                    {"threads",      optional_argument, nullptr, THREAD_NUM_OPT},
+                    {"stepsize",     optional_argument, nullptr, STEP_SIZE_OPT},
+                    {"energylow",    optional_argument, nullptr, ENERGY_LOW_LIMIT_OPT},
+                    {"energycenter", optional_argument, nullptr, ENERGY_CENTER_OPT},
+                    {"energyhigh",   optional_argument, nullptr, ENERGY_HIGH_LIMIT_OPT},
+                    {"gaussian",     no_argument,       nullptr, GAUSSIAN_ENERGY_OPT},
+                    {"powerlaw",     no_argument,       nullptr, POWERLAW_SPECTRUM_OPT},
+                    {"alpha",        optional_argument, nullptr, POWERLAW_ALPHA_OPT},
+                    {"mono",         no_argument,       nullptr, MONOENERGETIC_OPT},
+                    {"arbitrary",    no_argument,       nullptr, ARBITRARY_SPECTRUM_OPT},
+                    {"sigma",        optional_argument, nullptr, GAUSSIAN_SIGMA_OPT},
+                    {"quick",        no_argument,       nullptr, FTFP_PHYSICS_OPT},
+                    {"randomid",     no_argument,       nullptr, RANDOM_FILE_ID_OPT},
+                    {"inputfile",    required_argument, nullptr, INPUT_FILE_NAME_OPT},
+                    {"execute",      optional_argument, nullptr, MACRO_FILE_NAME_OPT},
+                    {"printstat",    no_argument,       nullptr, PRINT_STATISTICS_ON_DETECTORS_OPT},
                     {nullptr, 0,                        nullptr, 0}
             };
     const char *const short_options = ":a:c:e:y:glbmi:n:o:p:qrs:x:z";
     int opt;
     while ((opt = getopt_long(argc, argv, short_options, long_options, nullptr)) != -1) {
         switch (opt) {
+            case STEP_SIZE_OPT:
+                stepSizeMicrons = strtod(optarg, &ptr);
+                G4cout << "Step size in microns " << stepSizeMicrons << G4endl;
+                break;
             case 'a':
+            case POWERLAW_ALPHA_OPT:
                 powerlaw_alpha = strtod(optarg, &ptr);
                 G4cout << "Alpha set to " << powerlaw_alpha << G4endl;
                 break;
             case 'c':
+            case THREAD_NUM_OPT:
                 nThreads = strtol(optarg, &ptr, 10);
                 G4cout << "N threads set to " << nThreads << G4endl;
                 break;
             case 'e':
+            case ENERGY_LOW_LIMIT_OPT:
                 particleEnergyMeV_E1 = strtod(optarg, &ptr);
                 G4cout << "Energy E1 set to " << particleEnergyMeV_E1 << G4endl;
                 break;
             case 'y':
+            case ENERGY_HIGH_LIMIT_OPT:
                 particleEnergyMeV_E2 = strtod(optarg, &ptr);
                 G4cout << "Energy E2 set to " << particleEnergyMeV_E2 << G4endl;
                 break;
             case 'g':
+            case GAUSSIAN_ENERGY_OPT:
                 set_and_use_gaussian = TRUE;
                 G4cout << "Gaussian set" << set_and_use_gaussian << G4endl;
                 break;
             case 'i':
+            case INPUT_FILE_NAME_OPT:
                 gdml_filename = G4String(optarg);
                 G4cout << "GDML file set " << gdml_filename << G4endl;
                 break;
             case 'l':
+            case POWERLAW_SPECTRUM_OPT:
                 set_and_use_powerlaw = TRUE;
                 G4cout << "Power law set " << set_and_use_powerlaw << G4endl;
                 break;
             case 'b':
+            case ARBITRARY_SPECTRUM_OPT:
                 arbitrary_energy_spectrum = TRUE;
                 G4cout << "Arbitrary spectrum set " << arbitrary_energy_spectrum << G4endl;
                 break;
             case 'm':
+            case MONOENERGETIC_OPT:
                 set_and_use_monoenergy = TRUE;
                 G4cout << "Mono beam set " << set_and_use_monoenergy << G4endl;
                 break;
             case 'n':
+            case PARTICLE_NUMBER_OPT:
                 particlesNumber = strtol(optarg, &ptr, 10);
                 G4cout << "Particle number per run set to " << particlesNumber << G4endl;
                 visOpen = FALSE;
                 break;
             case 'o':
+            case OUTPUT_NAME_OPT:
                 output_ROOT_FileName = G4String(optarg);
                 G4cout << "ROOT output to " << output_ROOT_FileName << G4endl;
                 break;
             case 'p':
+            case PARTICLE_NAME_OPT:
                 strPart = G4String(optarg);
                 G4cout << "Particle set " << strPart << G4endl;
                 break;
             case 'q':
-                physName = "standard_opt4";
+            case FTFP_PHYSICS_OPT:
                 use_ftfp = TRUE;
-                G4cout << "Standard opt 4 physics set" << G4endl;
+                G4cout << "FTFP physics is selected over QGSP_BERT_HP." << G4endl;
                 break;
             case 'r':
+            case RANDOM_FILE_ID_OPT:
                 randomID = TRUE;
                 G4cout << "Random ROOT file ID will be used" << G4endl;
                 break;
             case 's':
+            case GAUSSIAN_SIGMA_OPT:
                 particle_sigma = strtod(optarg, &ptr);
                 G4cout << "Gaussian sigma set" << particle_sigma << G4endl;
                 break;
             case 'x':
+            case MACRO_FILE_NAME_OPT:
                 macro_filename = G4String(optarg);
                 G4cout << "Macro to be executed " << macro_filename << G4endl;
                 break;
             case 'z':
+            case PRINT_STATISTICS_ON_DETECTORS_OPT:
                 massPrinted = TRUE;
                 G4cout << "Statistics on logical volumes will be printed to stderr" << G4endl;
                 break;
@@ -243,19 +268,17 @@ int main(int argc, char **argv) {
 #endif
 
     runManager->SetUserInitialization(new DetectorConstruction(parser.GetWorldVolume(),
-                                                               parser.GetWorldVolume()->GetLogicalVolume()));
+                                                               parser.GetWorldVolume()->GetLogicalVolume(),
+                                                               stepSizeMicrons));
 
-/********************TEMPORARY FTFP Physics Workaround*********************/
-//    if (use_ftfp) {
-    auto physics = new FTFP_BERT();
-    runManager->SetUserInitialization(physics);
+    if (use_ftfp) {
+        auto physics = new FTFP_BERT();
+        runManager->SetUserInitialization(physics);
+    } else {
+        auto physics = new QGSP_BERT_HP();
+        runManager->SetUserInitialization(physics);
+    }
 
-//    } else {
-//        phys = new AaltoPhysicsList();
-//        phys->AddPhysicsList(physName);
-//        runManager->SetUserInitialization(phys);
-//    }
-/**************************************************************************/
 
     output_ROOT_FileName.toLower();
     output_ROOT_FileName = output_ROOT_FileName.substr(0, output_ROOT_FileName.find(".root"));

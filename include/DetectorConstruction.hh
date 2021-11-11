@@ -63,14 +63,14 @@ public:
 private:
     G4VPhysicalVolume *pvWorld;
     G4LogicalVolume *lvWorld;
-    G4UserLimits *fTinyStepLimit;
-    G4LogicalVolumeStore *lvs;
+    G4UserLimits *fUserStepLimit;
+    G4LogicalVolumeStore *logical_volume_store;
     G4int iDetectorCount, jDetectorCount;
     DetectorConstructionMessenger *fMessenger;
 
 public:
     lsDetectorNameRecords listDetectorNames;
-    DetectorConstruction(G4VPhysicalVolume *setWorld, G4LogicalVolume *LV);
+    DetectorConstruction(G4VPhysicalVolume *setWorld, G4LogicalVolume *LV, G4double stepSize);
 
     ~DetectorConstruction();
 

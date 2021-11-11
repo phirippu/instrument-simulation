@@ -165,8 +165,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
             gun->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(local_z);
             break;
     }
-
-    gun->GeneratePrimaryVertex(anEvent);
+//    G4cerr << gun->GetParticleEnergy()<< "MeV"<< G4endl ;
+//    gun->GetParticleDefinition()->DumpTable();
+//    G4cerr << << "MeV"<< G4endl ;
+//    gun->GeneratePrimaryVertex(anEvent);
 
 }
 

@@ -38,7 +38,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(geant4-sim-gdml geant4-sim-gdml.cc ${sources} ${headers})
+add_executable(geant4-sim-gdml geant4-sim-gdml.cc ${sources} ${headers} geant4-sim-gdml.h)
 target_link_libraries(geant4-sim-gdml ${Geant4_LIBRARIES} GSL::gsl GSL::gslcblas)
 
 #----------------------------------------------------------------------------
