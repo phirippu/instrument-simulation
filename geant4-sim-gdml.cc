@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     G4double particle_sigma = 0.001;
     G4double powerlaw_alpha = 0;
     G4int nThreads = G4Threading::G4GetNumberOfCores();
-    G4int particlesNumber = 1;
+    G4long particlesNumber = 1;
     G4GDMLParser g4GdmlParser;
     char *ptr;
 
@@ -338,7 +338,20 @@ int main(int argc, char **argv) {
     } else {
         G4cout << "[INFO] Batch mode run. Nparticles " << particlesNumber << G4endl;
         UImanager->SetVerboseLevel(0);
-        runManager->BeamOn(particlesNumber);
+        if (particlesNumber <= INT_MAX) {
+            runManager->BeamOn((int) particlesNumber);
+        } else {
+            auto batches = (int) (particlesNumber / (long) INT_MAX);
+            G4int k = INT_MAX;
+            G4cout << "[INFO] Nparticles is larger than INT_MAX. Will use " << batches + 1 << " batches." << G4endl;
+            for (int i = 0; i <= batches; ++i) {
+                G4cout << "[INFO] Batch #" << i << " of " << k << " particles." << G4endl;
+                runManager->BeamOn(k);
+                particlesNumber -= k;
+                if (particlesNumber < INT_MAX) { k = (int) particlesNumber; }
+            }
+        }
+
 //        UImanager->ApplyCommand(G4String("/run/beamOn ") + G4UIcommand::ConvertToString(particlesNumber));
     }
 
