@@ -28,3 +28,4 @@ void print_usage() {
     G4cout << G4endl;
 }
 ```
+The software is written on the course of the main author's PhD research.
