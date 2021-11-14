@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<gdml xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="./gdml.xsd">
+
+  <define>
+    <position name="pos00" unit="mm" x="7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+    <rotation name="identity_rot" unit="rad" x="0" y="0" z="0"/>
+    <position name="pos01" unit="mm" x="-7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+  </define>
+
+  <materials>
+    <element Z="14" formula="SI" name="SI">
+      <atom type="A" unit="g/mol" value="2.80855000e+01"/>
+    </element>
+    <material name="Silicon">
+      <D type="density" unit="g/cm3" value="2.33000000e+00"/>
+      <fraction n="1.00000000e+00" ref="SI"/>
+    </material>
+    <element Z="7" formula="N" name="N">
+      <atom type="A" unit="g/mol" value="1.40067400e+01"/>
+    </element>
+    <element Z="8" formula="O" name="O">
+      <atom type="A" unit="g/mol" value="1.59994000e+01"/>
+    </element>
+    <element Z="18" formula="AR" name="AR">
+      <atom type="A" unit="g/mol" value="3.99480000e+01"/>
+    </element>
+    <material name="Air">
+      <D type="density" unit="g/cm3" value="1.20000000e-06"/>
+      <fraction n="7.54000000e-01" ref="N"/>
+      <fraction n="2.34000000e-01" ref="O"/>
+      <fraction n="1.20000000e-02" ref="AR"/>
+    </material>
+  </materials>
+
+  <solids>
+    <box lunit="mm" name="world_box" x="6.00000000e+03" y="6.00000000e+03" z="6.00000000e+03"/>
+    <box lunit="mm" name="box0" x="1.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
+    <box lunit="mm" name="box1" x="10.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
+  </solids>
+
+  <structure>
+    <volume name="SiliconBlockUpper">
+      <materialref ref="Silicon"/>
+      <solidref ref="box0"/>
+    </volume>
+    <volume name="SiliconBlockDown">
+      <materialref ref="Silicon"/>
+      <solidref ref="box1"/>
+    </volume>
+    
+    <volume name="world_volume_0x4345a00">
+      <materialref ref="Air"/>
+      <solidref ref="world_box"/>
+      <physvol>
+        <volumeref ref="SiliconBlockUpper"/>
+        <positionref ref="pos00"/>
+      </physvol>      
+      <physvol>
+        <volumeref ref="SiliconBlockDown"/>
+        <positionref ref="pos01"/>
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="default" version="1.0">
+    <world ref="world_volume_0x4345a00"/>
+  </setup>
+</gdml>
