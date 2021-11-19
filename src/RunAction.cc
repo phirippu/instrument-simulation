@@ -8,11 +8,13 @@
 
 #include "G4RunManager.hh"
 #include "G4Run.hh"
-#include "AnalysisManager.hh"
+#include "g4root.hh"
 
 
 RunAction::RunAction(G4String rootFileName)
         : G4UserRunAction(), localRun(nullptr), nofEvents(0), fRootFileName(std::move(rootFileName)) {
+    fRunID = 0;
+    iNtupleIdx = 0;
 }
 
 RunAction::~RunAction() = default;
@@ -22,11 +24,11 @@ G4Run *RunAction::GenerateRun() {
     return (G4Run *) localRun;
 }
 
-
+// This method is called immediately after GenerateRun
 void RunAction::BeginOfRunAction(const G4Run *run) {
-    G4cout << "[RunAction] Run " << run->GetRunID() << " start." << G4endl;
     G4RunManager::GetRunManager()->SetRandomNumberStore(false);
     auto analysisManager = G4AnalysisManager::Instance();
+
     miscIdx = analysisManager->CreateNtuple("Simulation Data", "Misc parameters");
     pcol = analysisManager->CreateNtupleSColumn(miscIdx, "Particle");
     npartcol = analysisManager->CreateNtupleDColumn(miscIdx, "Particle Number");
@@ -53,18 +55,17 @@ void RunAction::BeginOfRunAction(const G4Run *run) {
     yacol = analysisManager->CreateNtupleDColumn(miscIdx, "Ya");
     zacol = analysisManager->CreateNtupleDColumn(miscIdx, "Za");
 
-
     analysisManager->FinishNtuple(miscIdx);
-    b_tuple_written = FALSE;
+    bTupleWritten = FALSE;
 }
 
 void RunAction::EndOfRunAction(const G4Run *run) {
-    auto analysisManager = G4RootAnalysisManager::Instance();
+    auto analysisManager = G4AnalysisManager::Instance();
     nofEvents = run->GetNumberOfEvent();
     if (nofEvents == 0) return;
 
     const auto generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
-    if ((generatorAction != nullptr) && !b_tuple_written) {
+    if ((generatorAction != nullptr) && !bTupleWritten) {
         particle_name = generatorAction->GetParticleGun()->GetParticleDefinition()->GetParticleName();
         dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetSourcePosType();
         shape_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetPosDisType();
@@ -108,13 +109,14 @@ void RunAction::EndOfRunAction(const G4Run *run) {
         analysisManager->FillNtupleDColumn(miscIdx, zacol, axis_direction.z());
         analysisManager->AddNtupleRow(miscIdx);
     }
+
     analysisManager->Write();
 
     if (IsMaster()) {
 //        b_tuple_written = TRUE;
+        if (analysisManager->IsOpenFile()) { analysisManager->CloseFile(); }
         G4cout << G4endl << "[RunAction] --------------------End of Global Run-----------------------" << G4endl
                << "[RunAction]  The run was " << nofEvents << " events " << G4endl;
-        if (analysisManager->IsOpenFile()) { analysisManager->CloseFile(); }
     } else {
         G4cout << G4endl << "[RunAction] --------------------End of Local Run------------------------" << G4endl
                << "[RunAction]  The run was " << nofEvents << " events" << G4endl;

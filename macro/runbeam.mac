@@ -1,10 +1,11 @@
+# /control/macroPath /.../
+
 /control/verbose 0
 /tracking/verbose 0
 /event/verbose 0
-/run/initialize
 
-/control/execute ../macro/beam.mac
+/control/execute ../macro/gcr3.mac
 /control/execute ../macro/detectors.mac
 
 /run/initialize
-/run/printProgress 10000000
+/run/printProgress 1000000

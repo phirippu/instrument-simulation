@@ -1,0 +1,123 @@
+/gun/tune/beam 8
+/gun/tune/axis 1 0 0
+
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre 10 0 0 cm
+/gps/pos/radius 1 cm
+/gps/direction -1 0 0
+/gps/pos/rot1 0 1 0
+/gps/pos/rot2 0 0 1
+
+#
+#Source definition
+#
+# =============================
+# SPENVIS particle source
+# Project: FORESAIL-1
+# title:
+# Particle: GCR ion
+# 2018 Avg Spectrum
+# =============================
+/gps/particle proton
+/gps/ene/type Arb
+/gps/ene/diffspec true
+/gps/ene/emspec true
+/gps/hist/type arb
+/gps/hist/point 1.000000e+0	8.317600e-4
+/gps/hist/point 1.100000e+0	1.011000e-3
+/gps/hist/point 1.200000e+0	1.206900e-3
+/gps/hist/point 1.400000e+0	1.648300e-3
+/gps/hist/point 1.600000e+0	2.154000e-3
+/gps/hist/point 1.800000e+0	2.721900e-3
+/gps/hist/point 2.000000e+0	3.350200e-3
+/gps/hist/point 2.200000e+0	4.037100e-3
+/gps/hist/point 2.500000e+0	5.173300e-3
+/gps/hist/point 2.800000e+0	6.431600e-3
+/gps/hist/point 3.200000e+0	8.290000e-3
+/gps/hist/point 3.500000e+0	9.812800e-3
+/gps/hist/point 4.000000e+0	1.258300e-2
+/gps/hist/point 4.500000e+0	1.562600e-2
+/gps/hist/point 5.000000e+0	1.892500e-2
+/gps/hist/point 5.500000e+0	2.246200e-2
+/gps/hist/point 6.300000e+0	2.858200e-2
+/gps/hist/point 7.100000e+0	3.522000e-2
+/gps/hist/point 8.000000e+0	4.324900e-2
+/gps/hist/point 9.000000e+0	5.279600e-2
+/gps/hist/point 1.000000e+1	6.293300e-2
+/gps/hist/point 1.100000e+1	7.359700e-2
+/gps/hist/point 1.200000e+1	8.473200e-2
+/gps/hist/point 1.400000e+1	1.082300e-1
+/gps/hist/point 1.600000e+1	1.330900e-1
+/gps/hist/point 1.800000e+1	1.590500e-1
+/gps/hist/point 2.000000e+1	1.858800e-1
+/gps/hist/point 2.200000e+1	2.134100e-1
+/gps/hist/point 2.500000e+1	2.556800e-1
+/gps/hist/point 2.800000e+1	2.987500e-1
+/gps/hist/point 3.200000e+1	3.568500e-1
+/gps/hist/point 3.500000e+1	4.005900e-1
+/gps/hist/point 4.000000e+1	4.732400e-1
+/gps/hist/point 4.500000e+1	5.449600e-1
+/gps/hist/point 5.000000e+1	6.152500e-1
+/gps/hist/point 5.500000e+1	6.837300e-1
+/gps/hist/point 6.300000e+1	7.889500e-1
+/gps/hist/point 7.100000e+1	8.882700e-1
+/gps/hist/point 8.000000e+1	9.925700e-1
+/gps/hist/point 9.000000e+1	1.099100e+0
+/gps/hist/point 1.000000e+2	1.196000e+0
+/gps/hist/point 1.100000e+2	1.283600e+0
+/gps/hist/point 1.200000e+2	1.362300e+0
+/gps/hist/point 1.400000e+2	1.495600e+0
+/gps/hist/point 1.600000e+2	1.600400e+0
+/gps/hist/point 1.800000e+2	1.681100e+0
+/gps/hist/point 2.000000e+2	1.741500e+0
+/gps/hist/point 2.200000e+2	1.785200e+0
+/gps/hist/point 2.500000e+2	1.825500e+0
+/gps/hist/point 2.800000e+2	1.842400e+0
+/gps/hist/point 3.200000e+2	1.838900e+0
+/gps/hist/point 3.500000e+2	1.822400e+0
+/gps/hist/point 4.000000e+2	1.777600e+0
+/gps/hist/point 4.500000e+2	1.719600e+0
+/gps/hist/point 5.000000e+2	1.654800e+0
+/gps/hist/point 5.500000e+2	1.587100e+0
+/gps/hist/point 6.300000e+2	1.478600e+0
+/gps/hist/point 7.100000e+2	1.374200e+0
+/gps/hist/point 8.000000e+2	1.264600e+0
+/gps/hist/point 9.000000e+2	1.153500e+0
+/gps/hist/point 1.000000e+3	1.053700e+0
+/gps/hist/point 1.100000e+3	9.643000e-1
+/gps/hist/point 1.200000e+3	8.842500e-1
+/gps/hist/point 1.400000e+3	7.482100e-1
+/gps/hist/point 1.600000e+3	6.383100e-1
+/gps/hist/point 1.800000e+3	5.487700e-1
+/gps/hist/point 2.000000e+3	4.751900e-1
+/gps/hist/point 2.200000e+3	4.142200e-1
+/gps/hist/point 2.500000e+3	3.409500e-1
+/gps/hist/point 2.800000e+3	2.841000e-1
+/gps/hist/point 3.200000e+3	2.265300e-1
+/gps/hist/point 3.500000e+3	1.932900e-1
+/gps/hist/point 4.000000e+3	1.511200e-1
+/gps/hist/point 4.500000e+3	1.205300e-1
+/gps/hist/point 5.000000e+3	9.777700e-2
+/gps/hist/point 5.500000e+3	8.049500e-2
+/gps/hist/point 6.300000e+3	6.051900e-2
+/gps/hist/point 7.100000e+3	4.673400e-2
+/gps/hist/point 8.000000e+3	3.587500e-2
+/gps/hist/point 9.000000e+3	2.747500e-2
+/gps/hist/point 1.000000e+4	2.154600e-2
+/gps/hist/point 1.100000e+4	1.723300e-2
+/gps/hist/point 1.200000e+4	1.401800e-2
+/gps/hist/point 1.400000e+4	9.667700e-3
+/gps/hist/point 1.600000e+4	6.970200e-3
+/gps/hist/point 1.800000e+4	5.203900e-3
+/gps/hist/point 2.000000e+4	3.996300e-3
+/gps/hist/point 3.000000e+4	1.418500e-3
+/gps/hist/point 4.000000e+4	6.701100e-4
+/gps/hist/point 5.000000e+4	3.721500e-4
+/gps/hist/point 6.000000e+4	2.293700e-4
+/gps/hist/point 7.000000e+4	1.520500e-4
+/gps/hist/point 8.000000e+4	1.063500e-4
+/gps/hist/point 9.000000e+4	7.752500e-5
+/gps/hist/point 1.000000e+5	5.839300e-5
+/gps/hist/inter Log
+

@@ -62,6 +62,39 @@ The command-line options:
 - `--gaussian` use gaussian distribution for the incident particle energies.
 - `--energycenter=d`: the energy in MeV to use for `--mono` or the central energy for `--gaussian`.
 - `--sigma=d`: the sigma value for `--gaussian`.
-- `--quick`: use FTFP_BERT physics instead of QGSP_BERT_HP. See Reference Physics Lists in Geant4 for more detail.
+- `--useftfp`: use FTFP_BERT physics. See Reference Physics Lists in Geant4 for more detail.
+- `--useqgsp`: use QGSP_BERT physics. 
+- `--useqgsphp`: use QGSP_BERT physics with EM physics option 3 (slow). 
+- `--useftfphp`: use FTFP_BERT physics with EM physics option 4 (even slower). Makes sense for high precision dosimetry.
 - `--arbitrary`: allow arbitrary particle source definition in a macro file. See General Particle Source documentation for more detail.
 - `--printstat`: print debug information on the logical volumes.
+
+
+## Output file
+The output ROOT file contains two N-tuples.
+### "Detector Data"
+Has records of <DetectorName> + "_Edep_MeV" and "_Esec_MeV". Edep is the full deposited energy
+and Esec is the energy deposited by non-primary particle species.
+
+### "Simulation Data"
+Has several metadata about the simulation. The fields are written by each thread; 
+thus,to obtain the total particle number one may want to use 
+```python
+import uproot
+import numpy as np
+f = uproot.reading.open(...)
+sim = f["Detector Data"]
+data = f["Simulation Data"]
+particle_number = np.sum(data['Particle Number'].array())
+```
+
+
+## Limitations
+
+It is impossible to pack data from several runs into a single ROOT file.
+Worker threads are destroyed each time a run ends, and unless there is an external
+a non-Geant4 tool that opens, appends, and closes the ROOT file (which is ridiculous),
+the data of the worker thread is lost.
+
+It is impossible to run more than 2^31 - 1 particles in a single run. This limitation
+is not a priority in Geant4 development.

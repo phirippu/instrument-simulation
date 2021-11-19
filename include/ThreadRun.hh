@@ -14,15 +14,21 @@
 
 class ThreadRun : public G4Run {
 public:
-    ThreadRun(const G4String& rootFileName);
-    ~ThreadRun();
-    void RecordEvent(const G4Event*) override;
-    void Merge(const G4Run*) override;
+    explicit ThreadRun(const G4String &rootFileName);
+
+    ~ThreadRun() override;
+
+    void RecordEvent(const G4Event *) override;
+
+    void Merge(const G4Run *) override;
+
+    G4ToolsAnalysisManager *analysisManager = nullptr;
+
 private:
     std::vector<SensitiveDetector *> sdCollection;
     const DetectorConstruction *dConstruction;
     G4int iNtupleIdx;
-    G4ToolsAnalysisManager *analysisManager;
+
 };
 
 #endif //THREADRUN_HH
