@@ -36,7 +36,7 @@ private:
     ThreadRun *localRun;
     G4int nofEvents;
     G4int miscIdx{};
-    G4int pcol{}, dcol{}, scol{}, rcol{}, ecol{}, acol{}, mxtcol{}, mxpcol{}, mitcol{}, mipcol{}, xcol{}, ycol{}, zcol{}, xacol{}, yacol{}, zacol{}, emincol{}, emaxcol{}, emidcol{}, npartcol{};
+    G4int pcol{}, dcol{}, scol{}, rcol{}, ecol{}, acol{}, mxtcol{}, mxpcol{}, mitcol{}, mipcol{}, xcol{}, ycol{}, zcol{}, xacol{}, yacol{}, zacol{}, emincol{}, emaxcol{}, emidcol{}, npartcol{}, alphcol{};
     G4String fRootFileName;
 
     G4String particle_name;
@@ -54,6 +54,7 @@ private:
 
     G4double emin_gun{};
     G4double emax_gun{};
+    G4double palp_gun{};
     G4double emid_gun{};
 
     G4int fRunID;

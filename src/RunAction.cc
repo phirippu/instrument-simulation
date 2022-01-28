@@ -41,6 +41,7 @@ void RunAction::BeginOfRunAction(const G4Run *run) {
     emincol = analysisManager->CreateNtupleDColumn(miscIdx, "Energy Min");
     emidcol = analysisManager->CreateNtupleDColumn(miscIdx, "Energy Mid");
     emaxcol = analysisManager->CreateNtupleDColumn(miscIdx, "Energy Max");
+    alphcol = analysisManager->CreateNtupleDColumn(miscIdx, "Energy Alpha");
 
     mxtcol = analysisManager->CreateNtupleDColumn(miscIdx, "Max Theta");
     mxpcol = analysisManager->CreateNtupleDColumn(miscIdx, "Max Phi");
@@ -82,6 +83,7 @@ void RunAction::EndOfRunAction(const G4Run *run) {
         emin_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEmin();
         emax_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEmax();
         emid_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->GetEzero();
+        palp_gun = generatorAction->GetParticleGun()->GetCurrentSource()->GetEneDist()->Getalpha();
     }
 
     if (!IsMaster()) {
@@ -96,6 +98,7 @@ void RunAction::EndOfRunAction(const G4Run *run) {
         analysisManager->FillNtupleDColumn(miscIdx, emincol, emin_gun);
         analysisManager->FillNtupleDColumn(miscIdx, emidcol, emid_gun);
         analysisManager->FillNtupleDColumn(miscIdx, emaxcol, emax_gun);
+        analysisManager->FillNtupleDColumn(miscIdx, alphcol, palp_gun);
 
         analysisManager->FillNtupleDColumn(miscIdx, mxtcol, angular_max_theta);
         analysisManager->FillNtupleDColumn(miscIdx, mxpcol, angular_max_phi);
