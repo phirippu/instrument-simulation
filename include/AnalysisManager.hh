@@ -5,7 +5,8 @@
 #ifndef GEANT4_SIM_GDML_ANALYSISMANAGER_HH
 #define GEANT4_SIM_GDML_ANALYSISMANAGER_HH
 
-#include "g4root.hh"
+#include "G4String.hh"
+//#include "g4root.hh"
 class AnalysisManager {
 
 };

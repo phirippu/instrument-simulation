@@ -51,7 +51,6 @@
 #include <G4PhysListFactory.hh>
 #include <PhysicsList.hh>
 #include <PhysicsListMessenger.hh>
-#include "g4root.hh"
 
 
 G4bool bTupleWritten;
@@ -284,7 +283,8 @@ int main(int argc, char **argv) {
 
     G4cout << "[INFO] Will use GDML file " << gdml_filename << G4endl;
 
-    output_ROOT_FileName.toLower();
+//    output_ROOT_FileName.toLower();
+    output_ROOT_FileName = G4StrUtil::to_lower_copy(output_ROOT_FileName);
     output_ROOT_FileName = output_ROOT_FileName.substr(0, output_ROOT_FileName.find(".root"));
     if (randomID) {
         output_ROOT_FileName = output_ROOT_FileName + "_0x" + (boost::format("%016x") % seed).str() + ".root";

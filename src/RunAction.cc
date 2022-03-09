@@ -5,10 +5,10 @@
 #include <ThreadRun.hh>
 #include <utility>
 #include "RunAction.hh"
+#include "G4RootAnalysisManager.hh"
 
 #include "G4RunManager.hh"
 #include "G4Run.hh"
-#include "g4root.hh"
 
 
 RunAction::RunAction(G4String rootFileName)
@@ -27,7 +27,7 @@ G4Run *RunAction::GenerateRun() {
 // This method is called immediately after GenerateRun
 void RunAction::BeginOfRunAction(const G4Run *run) {
     G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-    auto analysisManager = G4AnalysisManager::Instance();
+    auto analysisManager = G4RootAnalysisManager::Instance();
 
     miscIdx = analysisManager->CreateNtuple("Simulation Data", "Misc parameters");
     pcol = analysisManager->CreateNtupleSColumn(miscIdx, "Particle");
@@ -61,7 +61,7 @@ void RunAction::BeginOfRunAction(const G4Run *run) {
 }
 
 void RunAction::EndOfRunAction(const G4Run *run) {
-    auto analysisManager = G4AnalysisManager::Instance();
+    auto analysisManager = G4RootAnalysisManager::Instance();
     nofEvents = run->GetNumberOfEvent();
     if (nofEvents == 0) return;
 

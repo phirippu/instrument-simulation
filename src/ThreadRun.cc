@@ -3,18 +3,18 @@
 //
 
 #include "ThreadRun.hh"
-#include "g4root.hh"
 #include <G4Event.hh>
 #include <G4RunManager.hh>
 #include <G4SDManager.hh>
 #include <RunAction.hh>
 #include "G4RunManagerFactory.hh"
 #include <valarray>
+#include <G4RootAnalysisManager.hh>
 
 
 ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
 
-    analysisManager = G4AnalysisManager::Instance();
+    analysisManager = G4RootAnalysisManager::Instance();
     analysisManager->SetFileName(rootFileName);
     if ( G4Threading::IsMultithreadedApplication() ) analysisManager->SetNtupleMerging(true);
 
