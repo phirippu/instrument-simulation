@@ -10,8 +10,8 @@
 #include "EventAction.hh"
 #include "PrimaryGeneratorAction.hh"
 
-ActionInitialization::ActionInitialization(G4double particleBeamRadius, G4String rootFileName)
-        : G4VUserActionInitialization(), aGunRadius(particleBeamRadius), fRootFileName(std::move(rootFileName)) {}
+ActionInitialization::ActionInitialization(G4String rootFileName, G4String iaeaFileName)
+        : G4VUserActionInitialization(), fRootFileName(std::move(rootFileName)), s_IAEAFileName(iaeaFileName) {}
 
 ActionInitialization::~ActionInitialization() {
 //    delete rLocalRunAction;
@@ -27,5 +27,5 @@ void ActionInitialization::Build() const {
     SetUserAction(evAction);
     SetUserAction(rLocalRunAction);
     auto exc = new ExceptionHandler();
-    SetUserAction(new PrimaryGeneratorAction(aGunRadius));
+    SetUserAction(new PrimaryGeneratorAction(s_IAEAFileName));
 }

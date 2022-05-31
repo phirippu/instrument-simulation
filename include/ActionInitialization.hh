@@ -11,7 +11,7 @@
 
 class ActionInitialization : public G4VUserActionInitialization {
 public:
-    explicit ActionInitialization(G4double particleBeamRadius, G4String rootFileName);
+    explicit ActionInitialization(G4String rootFileName, G4String iaeaFileName);
 
     ~ActionInitialization() override;
 
@@ -22,6 +22,7 @@ public:
 private:
     G4double aGunRadius;
     G4String fRootFileName;
+    G4String s_IAEAFileName;
 };
 
 

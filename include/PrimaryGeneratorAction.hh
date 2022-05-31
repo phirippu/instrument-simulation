@@ -39,6 +39,7 @@
 #include <G4GenericMessenger.hh>
 #include "globals.hh"
 #include "G4GeneralParticleSource.hh"
+#include "G4IAEAphspReader.hh"
 
 class G4Event;
 
@@ -51,17 +52,17 @@ class G4ParticleGun;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
 
-    explicit PrimaryGeneratorAction(G4double Radius);
+    explicit PrimaryGeneratorAction(G4String iaea_File);
 
-    explicit PrimaryGeneratorAction(G4double Radius, CLHEP::Hep3Vector axis);
+    /*explicit PrimaryGeneratorAction(G4double Radius, CLHEP::Hep3Vector axis);*/
 
     ~PrimaryGeneratorAction() override;
 
     void GeneratePrimaries(G4Event *anEvent) override;
 
-    const G4GeneralParticleSource *GetParticleGun() const { return gun; }
+    [[nodiscard]] const G4GeneralParticleSource *GetParticleGun() const { return gun; }
 
-    CLHEP::Hep3Vector GetPrimaryAxis() const { return fDetectorAxisVector; }
+    [[nodiscard]] CLHEP::Hep3Vector GetPrimaryAxis() const { return fDetectorAxisVector; }
 
     void DefineCommands();
 
@@ -93,6 +94,10 @@ private:
     CLHEP::Hep3Vector fGunDirection;
     G4GenericMessenger *fMessengerDir;
     beamType fPrimaryBeamType;
+    G4String fIAEA_phase_file;
+
+    static G4IAEAphspReader * theIAEAReader;
+
 };
 
 #endif

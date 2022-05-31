@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     G4bool arbitrary_energy_spectrum = FALSE;
     G4UIExecutive *ui = nullptr;
     G4VisManager *visManager = nullptr;
-    G4double particleBeamRadius = 10 * cm;
+//    G4double particleBeamRadius = 10 * cm;
     G4double stepSizeMicrons = 0.0;
     G4double particleEnergyMeV_E1 = 0.001;
     G4double particleEnergyMeV_E2 = 0.001;
@@ -324,7 +324,7 @@ int main(int argc, char **argv) {
 
 
     runManager->SetUserInitialization(pPhysicsList);
-    runManager->SetUserInitialization(new ActionInitialization(particleBeamRadius, output_ROOT_FileName));
+    runManager->SetUserInitialization(new ActionInitialization(output_ROOT_FileName, ""));
     runManager->Initialize();
 
     if (visOpen) {

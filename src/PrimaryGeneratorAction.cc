@@ -9,11 +9,16 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "AnalysisManager.hh"
+#include "G4IAEAphspReader.hh"
 
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(G4double Radius) //Aalto-1 default 30.0 * cm
+namespace { G4Mutex myLowEPrimGenMutex = G4MUTEX_INITIALIZER; }
+G4IAEAphspReader *PrimaryGeneratorAction::theIAEAReader = nullptr;
+
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4String iaea_File)
         : G4VUserPrimaryGeneratorAction(),
-          fRadius(Radius) {
+          fRadius(10 * cm),
+          fIAEA_phase_file(std::move(iaea_File)) {
     gun = InitializeGPS();
     fDetectorAxisVector = G4ThreeVector(-1, 0, 0); // default axis
     fPrimaryBeamType = simplebeam;
@@ -21,8 +26,11 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4double Radius) //Aalto-1 defaul
     fAngle = 0;
     fBeamTypeInt = 0;
     InitTheGun();
+
+
 }
 
+/*
 PrimaryGeneratorAction::PrimaryGeneratorAction(G4double Radius, CLHEP::Hep3Vector axis)
         : G4VUserPrimaryGeneratorAction(), fRadius(Radius),
           fDetectorAxisVector(std::move(axis)) {
@@ -34,6 +42,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4double Radius, CLHEP::Hep3Vecto
     InitTheGun();
 
 }
+*/
+
+
+
 
 void PrimaryGeneratorAction::InitTheGun() {
     fMessengerDir = new G4GenericMessenger(this, "/gun/tune/", "Primary generator tuning");
@@ -48,14 +60,25 @@ void PrimaryGeneratorAction::DefineCommands() {
     beamCmd.SetGuidance(guidance);
     beamCmd.SetParameterName("Beam type", false);
     beamCmd.SetDefaultValue("0");
+
     auto &axisCmd = fMessengerDir->DeclareProperty("axis", fDetectorAxisVector);
     axisCmd.SetGuidance("The primary axis for angle calculations.\n");
     axisCmd.SetParameterName("Axis", false);
     axisCmd.SetDefaultValue("0 0 1");
+
+    auto &iaeaCmd = fMessengerDir->DeclareProperty("file", fIAEA_phase_file);
+    iaeaCmd.SetGuidance("The IAEA phase space file.\n");
+    iaeaCmd.SetParameterName("IAEA file", false);
+    iaeaCmd.SetDefaultValue("");
 }
 
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
+    G4AutoLock lock(&myLowEPrimGenMutex);
+    if (theIAEAReader) {
+        delete theIAEAReader;
+        theIAEAReader = nullptr;
+    }
     delete gun;
 }
 
@@ -74,7 +97,14 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
     fPrimaryBeamType = static_cast<beamType>(fBeamTypeInt);
 
     switch (fPrimaryBeamType) {
-        case macrodefined: // do nothing in case macro defines the beam in full
+        case macrodefined: // if the beam is defined in .mac file, try to init IAEA generator if a command was given in a macro file
+            if ((!fIAEA_phase_file.empty()) && (theIAEAReader == nullptr)) {
+                G4AutoLock lock(&myLowEPrimGenMutex);
+//                G4String fileName = "../A10.1";
+                theIAEAReader = new G4IAEAphspReader(fIAEA_phase_file);
+                G4ThreeVector psfShift(0., 0., -100. * cm); // the standard shift for radiation therapy
+                theIAEAReader->SetGlobalPhspTranslation(psfShift); // a rotation is possible, see the IAEA Reader doc.
+            }
             break;
         case simplebeam:
             gun->GetCurrentSource()->GetPosDist()->SetCentreCoords(fGunPosition);
@@ -168,8 +198,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
 //    G4cerr << gun->GetParticleEnergy()<< "MeV"<< G4endl ;
 //    gun->GetParticleDefinition()->DumpTable();
 //    G4cerr << << "MeV"<< G4endl ;
-    gun->GeneratePrimaryVertex(anEvent);
-
+    if (theIAEAReader) {
+        G4AutoLock lock(&myLowEPrimGenMutex);
+        theIAEAReader->GeneratePrimaryVertex(anEvent);
+    } else {
+        gun->GeneratePrimaryVertex(anEvent);
+    }
 }
 
 
