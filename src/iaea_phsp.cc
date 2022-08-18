@@ -52,6 +52,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <algorithm>
 #include <cctype>
 
 #include<sys/types.h>
@@ -354,11 +355,15 @@ void iaea_get_maximum_energy(const IAEA_I32 *id, IAEA_Float *Emax)
 
       // phsp file
       *Emax = 0.f;
-      for(int i=0;i<MAX_NUM_PARTICLES;i++)
+      for(double & i : p_iaea_header[*id]->maximumKineticEnergy)
       {
-        *Emax = (IAEA_Float) max(*Emax,p_iaea_header[*id]->maximumKineticEnergy[i]);
+        *Emax = (IAEA_Float) std::max((double )*Emax,i);
       }
-      return;
+//      for(int i=0;i<MAX_NUM_PARTICLES;i++)
+//      {
+//        *Emax = (IAEA_Float) max(*Emax,p_iaea_header[*id]->maximumKineticEnergy[i]);
+//      }
+//      return;
 }
 IAEA_EXTERN_C IAEA_EXPORT
 void iaea_get_maximum_energy_(const IAEA_I32 *id, IAEA_Float *Emax)

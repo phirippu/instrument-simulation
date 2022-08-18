@@ -2,9 +2,9 @@
 <gdml xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="./gdml.xsd">
 
   <define>
-    <position name="pos00" unit="mm" x="7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+    <position name="pos00" unit="mm" x="0.00000000e+00" y="0.00000000e+00" z="10.00000000e+00"/>
     <rotation name="identity_rot" unit="rad" x="0" y="0" z="0"/>
-    <position name="pos01" unit="mm" x="-7.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+    <position name="pos01" unit="mm" x="0.00000000e+00" y="0.00000000e+00" z="20.00000000e+00"/>
   </define>
 
   <materials>
@@ -34,8 +34,8 @@
 
   <solids>
     <box lunit="mm" name="world_box" x="6.00000000e+03" y="6.00000000e+03" z="6.00000000e+03"/>
-    <box lunit="mm" name="box0" x="1.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
-    <box lunit="mm" name="box1" x="10.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
+    <box lunit="mm" name="box0" x="50" y="50" z="5"/>
+    <box lunit="mm" name="box1" x="100" y="100" z="10"/>
   </solids>
 
   <structure>

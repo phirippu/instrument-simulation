@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
 
     G4PhysListFactory g4PhysListFactory;
     G4VModularPhysicsList *pPhysicsList = nullptr;
-    PhysicsListMessenger *pPhysicsListMessenger = nullptr;
+    PhysicsListMessenger *pPhysicsListMessenger;
     G4String physicsListName = ".";
     G4Random::setTheEngine(new CLHEP::RanecuEngine);
     G4String strPart = G4String("geantino");
@@ -168,7 +168,7 @@ int main(int argc, char **argv) {
                 break;
             case 'c':
             case THREAD_NUM_OPT:
-                nThreads = strtol(optarg, &ptr, 10);
+                nThreads = (int) strtol(optarg, &ptr, 10);
                 G4cout << "N threads set to " << nThreads << G4endl;
                 break;
             case 'e':
@@ -370,8 +370,10 @@ int main(int argc, char **argv) {
     if (visOpen) {
         UImanager->ApplyCommand("/control/execute ../macro/vis.mac");
         UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
-        ui->SessionStart();
-        delete ui;
+        if (ui) {
+            ui->SessionStart();
+            delete ui;
+        }
         delete visManager;
     } else {
         G4cout << "[INFO] Batch mode run. Nparticles " << particlesNumber << G4endl;
@@ -380,20 +382,6 @@ int main(int argc, char **argv) {
             runManager->BeamOn((int) particlesNumber);
         } else {
             runManager->BeamOn((int) RUN_CUT_THRESHOLD);
-            /*
-            auto batches = (int) (particlesNumber / (long) RUN_CUT_THRESHOLD);
-            G4int k = RUN_CUT_THRESHOLD;
-            G4cout << "[INFO] Nparticles is larger than " << RUN_CUT_THRESHOLD << ". Will use " << batches + 1
-                   << " batches." << G4endl;
-            for (int i = 0; i <= batches; ++i) {
-                if (k > 0) {
-                    G4cout << "[INFO] Batch #" << i << " of " << k << " particles." << G4endl;
-                    runManager->BeamOn(k);
-//                    rootAnalysisManager->Write();
-                }
-                particlesNumber -= k;
-                if (particlesNumber < RUN_CUT_THRESHOLD) { k = (int) particlesNumber; }
-            }*/
         }
     }
     delete runManager;

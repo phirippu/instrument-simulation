@@ -93,7 +93,7 @@ char *pbuffer;  /* pointer to buffer for output of run info for failures */
 #ifndef MINMAX_DEFINED
 #define MINMAX_DEFINED
 #define min(a,b)    (((a) < (b)) ? (a) : (b))
-#define max(a,b)    (((a) > (b)) ? (a) : (b))
+//#define max(a,b)    (((a) > (b)) ? (a) : (b))
 //#define __max       max
 //#define __min       min
 #endif /*MINMAX_DEFINED */

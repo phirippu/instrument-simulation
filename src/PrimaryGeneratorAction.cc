@@ -102,6 +102,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
                 G4AutoLock lock(&myLowEPrimGenMutex);
 //                G4String fileName = "../A10.1";
                 theIAEAReader = new G4IAEAphspReader(fIAEA_phase_file);
+                if (theIAEAReader->GetTotalParticles() > 0) {
+                    G4cout << "Loaded IAEA phase space file " << fIAEA_phase_file << G4endl;
+                } else {
+                    G4cerr << "Can not load IAEA phase space file " << fIAEA_phase_file << G4endl;
+                }
                 G4ThreeVector psfShift(0., 0., -100. * cm); // the standard shift for radiation therapy
                 theIAEAReader->SetGlobalPhspTranslation(psfShift); // a rotation is possible, see the IAEA Reader doc.
             }
