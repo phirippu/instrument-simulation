@@ -3,7 +3,8 @@
 # 8 - full macro-defined beam
 /gun/tune/beam 8
 /gun/tune/axis 1 0 0
-/gun/tune/file /home/phil/cluster/Geant4/Geant4-Data/Linac/bin/A20_PHSP.1
+#/gun/tune/file /home/phil/cluster/Geant4/Geant4-Data/Linac/bin/A20_PHSP.1
+/gun/tune/file /home/phil/Work/IAEA/A20_PHSP.1
 
 #/gps/ene/type Pow
 #/gps/ene/min 0.3 MeV

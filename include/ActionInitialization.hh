@@ -11,7 +11,7 @@
 
 class ActionInitialization : public G4VUserActionInitialization {
 public:
-    explicit ActionInitialization(G4String rootFileName, G4String iaeaFileName);
+    explicit ActionInitialization(G4String rootFileName, G4String iaeaFileName, G4int nThreads);
 
     ~ActionInitialization() override;
 
@@ -20,9 +20,9 @@ public:
     void Build() const override;
 
 private:
-    G4double aGunRadius;
     G4String fRootFileName;
     G4String s_IAEAFileName;
+    G4int fnThreads;
 };
 
 

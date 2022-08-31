@@ -10,3 +10,5 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 /gdml/loop.gdml
+/gdml/chipw1.gdml
+/gdml/chipw2.gdml

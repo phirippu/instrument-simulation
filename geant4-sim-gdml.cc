@@ -126,6 +126,7 @@ int main(int argc, char **argv) {
     G4String gdml_filename = G4String(".");
     G4String macro_filename = G4String(".");
     G4String output_ROOT_FileName = "output";
+    G4String iaea_phase_space_filename = "";
 
     static struct option long_options[] =
             {
@@ -151,12 +152,16 @@ int main(int argc, char **argv) {
                     {"inputfile",    required_argument, nullptr, INPUT_FILE_NAME_OPT},
                     {"execute",      optional_argument, nullptr, MACRO_FILE_NAME_OPT},
                     {"printstat",    no_argument,       nullptr, PRINT_STATISTICS_ON_DETECTORS_OPT},
+                    {"loadphsp",     required_argument, nullptr, LOAD_IAEA_PHSP_FILE},
                     {nullptr, 0,                        nullptr, 0}
             };
     const char *const short_options = ":a:c:e:y:glbmi:n:o:p:qrs:x:z";
     int opt;
     while ((opt = getopt_long(argc, argv, short_options, long_options, nullptr)) != -1) {
         switch (opt) {
+            case LOAD_IAEA_PHSP_FILE:
+                iaea_phase_space_filename = G4String(optarg);
+                break;
             case STEP_SIZE_OPT:
                 stepSizeMicrons = strtod(optarg, &ptr);
                 G4cout << "Step size in microns " << stepSizeMicrons << G4endl;
@@ -324,7 +329,8 @@ int main(int argc, char **argv) {
 
 
     runManager->SetUserInitialization(pPhysicsList);
-    runManager->SetUserInitialization(new ActionInitialization(output_ROOT_FileName, ""));
+    runManager->SetUserInitialization(
+            new ActionInitialization(output_ROOT_FileName, iaea_phase_space_filename, nThreads));
     runManager->Initialize();
 
     if (visOpen) {

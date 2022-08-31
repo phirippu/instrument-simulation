@@ -15,9 +15,9 @@
 namespace { G4Mutex myLowEPrimGenMutex = G4MUTEX_INITIALIZER; }
 G4IAEAphspReader *PrimaryGeneratorAction::theIAEAReader = nullptr;
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(G4String iaea_File)
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4String iaea_File, G4int nThreads)
         : G4VUserPrimaryGeneratorAction(),
-          fRadius(10 * cm),
+          fRadius(10 * cm), fnThreads(nThreads),
           fIAEA_phase_file(std::move(iaea_File)) {
     gun = InitializeGPS();
     fDetectorAxisVector = G4ThreeVector(-1, 0, 0); // default axis
@@ -26,8 +26,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4String iaea_File)
     fAngle = 0;
     fBeamTypeInt = 0;
     InitTheGun();
-
-
+    frunManager = G4RunManager::GetRunManager();
+    G4cerr << frunManager << G4endl;
 }
 
 /*
@@ -44,14 +44,27 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4double Radius, CLHEP::Hep3Vecto
 }
 */
 
-
-
-
 void PrimaryGeneratorAction::InitTheGun() {
     fMessengerDir = new G4GenericMessenger(this, "/gun/tune/", "Primary generator tuning");
     fGunPosition = G4ThreeVector(29.4 * mm, 0.151 * mm, 0 * mm);
     fGunDirection = G4ThreeVector(0, 0, 1);
     DefineCommands();
+    // if the beam is defined in .mac file, try to init IAEA generator if a command was given in a macro file
+    if ((!fIAEA_phase_file.empty()) && (theIAEAReader == nullptr)) {
+        G4AutoLock lock(&myLowEPrimGenMutex);
+        theIAEAReader = new G4IAEAphspReader(fIAEA_phase_file);
+        if (theIAEAReader->GetTotalParticles() > 0) {
+            G4cout << "Loaded IAEA phase space file " << fIAEA_phase_file << G4endl;
+        } else {
+            G4cerr << "Can not load IAEA phase space file " << fIAEA_phase_file << G4endl;
+        }
+        G4ThreeVector psfShift(0., 0., -100. * cm); // the standard shift for radiation therapy
+        theIAEAReader->SetGlobalPhspTranslation(psfShift); // a rotation is possible, see the IAEA Reader doc.
+        theIAEAReader->SetTotalParallelRuns(fnThreads);
+        G4cout << fnThreads << " threads are set up for IAEA phase space." << G4endl;
+        theIAEAReader->SetParallelRun(G4Threading::G4GetThreadId());
+        G4cout << G4Threading::G4GetThreadId() << " is this thread ID." << G4endl;
+    }
 }
 
 void PrimaryGeneratorAction::DefineCommands() {
@@ -97,19 +110,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
     fPrimaryBeamType = static_cast<beamType>(fBeamTypeInt);
 
     switch (fPrimaryBeamType) {
-        case macrodefined: // if the beam is defined in .mac file, try to init IAEA generator if a command was given in a macro file
-            if ((!fIAEA_phase_file.empty()) && (theIAEAReader == nullptr)) {
-                G4AutoLock lock(&myLowEPrimGenMutex);
-//                G4String fileName = "../A10.1";
-                theIAEAReader = new G4IAEAphspReader(fIAEA_phase_file);
-                if (theIAEAReader->GetTotalParticles() > 0) {
-                    G4cout << "Loaded IAEA phase space file " << fIAEA_phase_file << G4endl;
-                } else {
-                    G4cerr << "Can not load IAEA phase space file " << fIAEA_phase_file << G4endl;
-                }
-                G4ThreeVector psfShift(0., 0., -100. * cm); // the standard shift for radiation therapy
-                theIAEAReader->SetGlobalPhspTranslation(psfShift); // a rotation is possible, see the IAEA Reader doc.
-            }
+        case macrodefined:;
             break;
         case simplebeam:
             gun->GetCurrentSource()->GetPosDist()->SetCentreCoords(fGunPosition);
@@ -205,6 +206,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
 //    G4cerr << << "MeV"<< G4endl ;
     if (theIAEAReader) {
         G4AutoLock lock(&myLowEPrimGenMutex);
+//        theIAEAReader->SetParallelRun(G4Threading::G4GetThreadId());
         theIAEAReader->GeneratePrimaryVertex(anEvent);
     } else {
         gun->GeneratePrimaryVertex(anEvent);

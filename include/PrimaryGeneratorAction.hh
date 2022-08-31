@@ -40,6 +40,8 @@
 #include "globals.hh"
 #include "G4GeneralParticleSource.hh"
 #include "G4IAEAphspReader.hh"
+#include "G4RunManager.hh"
+
 
 class G4Event;
 
@@ -52,7 +54,7 @@ class G4ParticleGun;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
 
-    explicit PrimaryGeneratorAction(G4String iaea_File);
+    explicit PrimaryGeneratorAction(G4String iaea_File, G4int nThreads);
 
     /*explicit PrimaryGeneratorAction(G4double Radius, CLHEP::Hep3Vector axis);*/
 
@@ -88,6 +90,7 @@ private:
     G4double fRadius;
     G4double fAngle;
     G4int fBeamTypeInt;
+    G4int fnThreads;
     CLHEP::Hep3Vector fCentreOfDetector;
     CLHEP::Hep3Vector fDetectorAxisVector;
     CLHEP::Hep3Vector fGunPosition;
@@ -95,6 +98,8 @@ private:
     G4GenericMessenger *fMessengerDir;
     beamType fPrimaryBeamType;
     G4String fIAEA_phase_file;
+    G4RunManager *frunManager;
+
 
     static G4IAEAphspReader * theIAEAReader;
 

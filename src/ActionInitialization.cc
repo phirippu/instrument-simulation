@@ -10,8 +10,9 @@
 #include "EventAction.hh"
 #include "PrimaryGeneratorAction.hh"
 
-ActionInitialization::ActionInitialization(G4String rootFileName, G4String iaeaFileName)
-        : G4VUserActionInitialization(), fRootFileName(std::move(rootFileName)), s_IAEAFileName(iaeaFileName) {}
+ActionInitialization::ActionInitialization(G4String rootFileName, G4String iaeaFileName, G4int nThreads)
+        : G4VUserActionInitialization(), fRootFileName(std::move(rootFileName)), s_IAEAFileName(iaeaFileName),
+          fnThreads(nThreads) {}
 
 ActionInitialization::~ActionInitialization() {
 //    delete rLocalRunAction;
@@ -27,5 +28,5 @@ void ActionInitialization::Build() const {
     SetUserAction(evAction);
     SetUserAction(rLocalRunAction);
     auto exc = new ExceptionHandler();
-    SetUserAction(new PrimaryGeneratorAction(s_IAEAFileName));
+    SetUserAction(new PrimaryGeneratorAction(s_IAEAFileName, fnThreads));
 }
