@@ -1,7 +1,7 @@
-#/detector/add SiliconBlockDown
-#/detector/add SiliconBlockUpper
-/detector/add SiliconChip
-/detector/add WaterReference
+/detector/add D
+/detector/add U
+#/detector/add SiliconChip
+#/detector/add WaterReference
 #/detector/add target_3
 #/detector/add target_4
 #/detector/add target_5
