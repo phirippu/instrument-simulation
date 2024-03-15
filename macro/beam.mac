@@ -6,30 +6,42 @@
 #/gun/tune/file /home/phil/cluster/Geant4/Geant4-Data/Linac/bin/A20_PHSP.1
 #/gun/tune/file /home/phil/Work/IAEA/A20_PHSP.1
 
-#/gps/ene/type Pow
-#/gps/ene/min 0.3 MeV
-#/gps/ene/max 15 MeV
-#/gps/ene/alpha 0
+/gps/ene/type Pow
+/gps/ene/min 10 keV
+/gps/ene/max 500 keV
+/gps/ene/alpha 0
 
 #/gps/ene/type Gauss
 #/gps/ene/mono 100 MeV
 #/gps/ene/sigma 1 MeV
-/gps/energy 100 MeV
+#/gps/energy 100 MeV
 
 /gps/pos/type Plane
 /gps/pos/shape Circle
-/gps/pos/centre -50 0 0 mm
-/gps/pos/rot1 0 1 0 cm
-/gps/pos/rot2 0 0 1 cm
+/gps/pos/centre 0 0 0 mm
+#/gps/pos/rot1 0 1 0 cm
+#/gps/pos/rot2 0 0 1 cm
 #/gps/ang/rot1 1 0 3 cm
 #/gps/ang/rot2 1 1 0 cm
 /gps/pos/radius 1 cm
 /gps/ang/type beam2d
 /gps/ang/surfnorm true
+/gps/direction 0 0 1
+
+
+
+
+
+
+
+
+
+
+
 #/gps/ang/user_coor true
 #/gps/direction 0 0.2 1
-/gps/direction 1 0 0
-/gps/energy 100 MeV
+
+#/gps/energy 100 MeV
 
 
 #/gps/pos/type Surface

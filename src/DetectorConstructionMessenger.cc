@@ -3,7 +3,9 @@
 //
 
 #include <G4RunManager.hh>
+#include <G4Color.hh>
 #include "DetectorConstructionMessenger.hh"
+
 
 void DetectorConstructionMessenger::SetNewValue(G4UIcommand *g4command, G4String g4string_name) {
     if (g4command == fCreateCmd) {
@@ -13,6 +15,9 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand *g4command, G4String
     }
     if (g4command == fListCmd) {
         fConstruction->ListDetectors();
+    }
+    if (g4command == fColorCmd) {
+        fConstruction->ColorizeDetectors();
     }
 }
 
@@ -27,6 +32,9 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
     fListCmd = new G4UIcmdWithoutParameter("/detector/list", this);
     fListCmd->SetGuidance("List sensitive detectors.");
     fListCmd->AvailableForStates(G4State_Idle);
+    fColorCmd = new G4UIcmdWithoutParameter("/detector/color", this);
+    fColorCmd->SetGuidance("Colorize sensitive detectors.");
+    fColorCmd->AvailableForStates(G4State_Idle);
 }
 
 DetectorConstructionMessenger::~DetectorConstructionMessenger() {

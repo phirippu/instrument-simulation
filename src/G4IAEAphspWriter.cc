@@ -79,7 +79,8 @@ G4IAEAphspWriter * G4IAEAphspWriter::GetInstance()
 #include <set>
 #include <sstream>
 #include <vector>
-#include <G4SIunits.hh>
+//#include <G4SIunits.hh>
+#include <G4SystemOfUnits.hh>
 
 
 G4IAEAphspWriter::G4IAEAphspWriter()
@@ -106,7 +107,7 @@ G4IAEAphspWriter::~G4IAEAphspWriter()
 void G4IAEAphspWriter::SetZStop(G4double zstop)
 {
   theZStopVector->push_back(zstop);
-  G4cout << "Registered phase-space plane z = " << zstop/mm
+  G4cout << "Registered phase-space plane z = " << zstop/CLHEP::mm
 	 << " mm." << G4endl;
 }
 

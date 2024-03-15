@@ -63,8 +63,8 @@
 #include <cstdlib>
 #include <vector>
 #include <G4UnitsTable.hh>
-#include <G4SIunits.hh>
 #include "globals.hh"
+#include "G4SystemOfUnits.hh"
 
 
 #include "G4Gamma.hh"

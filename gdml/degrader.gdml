@@ -43,7 +43,7 @@
 
     <solids>
         <box lunit="mm" name="world_volume_shape_0x4345980" x="6.00000000e+03" y="6.00000000e+03" z="6.00000000e+03"/>
-        <box lunit="mm" name="Ush" x="3.60000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
+        <box lunit="mm" name="Ush" x="6.000000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
         <box lunit="mm" name="Dsh" x="70.00000000e+00" y="4.00000000e+01" z="4.00000000e+01"/>
     </solids>
 

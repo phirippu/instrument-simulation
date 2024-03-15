@@ -12,7 +12,7 @@
 #include "G4IAEAphspReader.hh"
 
 
-namespace { G4Mutex myLowEPrimGenMutex = G4MUTEX_INITIALIZER; }
+namespace { G4Mutex myPrimGenMutex = G4MUTEX_INITIALIZER; }
 G4IAEAphspReader *PrimaryGeneratorAction::theIAEAReader = nullptr;
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(G4String iaea_File, G4int nThreads)
@@ -51,7 +51,7 @@ void PrimaryGeneratorAction::InitTheGun() {
     DefineCommands();
     // if the beam is defined in .mac file, try to init IAEA generator if a command was given in a macro file
     if ((!fIAEA_phase_file.empty()) && (theIAEAReader == nullptr)) {
-        G4AutoLock lock(&myLowEPrimGenMutex);
+        G4AutoLock lock(&myPrimGenMutex);
         theIAEAReader = new G4IAEAphspReader(fIAEA_phase_file);
         if (theIAEAReader->GetTotalParticles() > 0) {
             G4cout << "Loaded IAEA phase space file " << fIAEA_phase_file << G4endl;
@@ -87,7 +87,7 @@ void PrimaryGeneratorAction::DefineCommands() {
 
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
-    G4AutoLock lock(&myLowEPrimGenMutex);
+    G4AutoLock lock(&myPrimGenMutex);
     if (theIAEAReader) {
         delete theIAEAReader;
         theIAEAReader = nullptr;
@@ -205,7 +205,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
 //    gun->GetParticleDefinition()->DumpTable();
 //    G4cerr << << "MeV"<< G4endl ;
     if (theIAEAReader) {
-        G4AutoLock lock(&myLowEPrimGenMutex);
+        G4AutoLock lock(&myPrimGenMutex);
 //        theIAEAReader->SetParallelRun(G4Threading::G4GetThreadId());
         theIAEAReader->GeneratePrimaryVertex(anEvent);
     } else {

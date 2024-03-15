@@ -28,6 +28,7 @@ private:
 	G4UIdirectory*               fConstructionDir;
 	G4UIcmdWithAString*          fCreateCmd;
 	G4UIcmdWithoutParameter*     fListCmd;
+	G4UIcmdWithoutParameter*     fColorCmd;
 };
 
 

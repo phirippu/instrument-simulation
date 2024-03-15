@@ -62,6 +62,7 @@ public:
     typedef std::list<tupDetectorName> lsDetectorNameRecords;
 private:
     G4VPhysicalVolume *pvWorld;
+    std::vector<G4LogicalVolume *>::const_iterator lvciter;
     G4LogicalVolume *lvWorld;
     G4UserLimits *fUserStepLimit;
     G4LogicalVolumeStore *logical_volume_store;
@@ -82,6 +83,7 @@ public:
 
     void ListDetectors();
 
+    void ColorizeDetectors();
 };
 
 
