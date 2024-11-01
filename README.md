@@ -70,11 +70,11 @@ The command-line options:
 ## Output file
 The output ROOT file contains two N-tuples.
 ### "Detector Data"
-Has records of <DetectorName> + "_Edep_MeV" and "_Esec_MeV". `_Edep_MeV` is the full deposited energy
+Has records of \<DetectorName\> + "_Edep_MeV" and "_Esec_MeV". `_Edep_MeV` is the full deposited energy
 and `_Esec_MeV` is the energy deposited by non-primary particle species. The numbers are in MeV.
 
 Also, it has these records: 
-- `Gun_energy_MeV` - the primary energy of each particle, MeV
+- `Gun_energy_MeV` - the primary energy of each particle **caused a hit**, thus, recorded, MeV
 - `Gun_angle_deg` - the angle of incidence with respect to the primary axis defined in a macro file by `/gun/tune/axis x y z`, degrees
 - `Gun_theta_deg` and `Gun_phi_deg` are the angular coordinates of the incident momentum vector in degrees. It is useful, e.g., when one wants to quantify non-normal incidence effects or analyze degrader influence.
 - `Src_theta_deg` and `Src_phi_deg` are the angular coordinates of the incident point location in degrees. This is useful, e.g., when one wants to limit the incident aperture in post-processing or quantify the solid angular acceptance of the particle instrument.
