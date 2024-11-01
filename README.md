@@ -62,23 +62,34 @@ The command-line options:
 - `--gaussian` use gaussian distribution for the incident particle energies.
 - `--energycenter=d`: the energy in MeV to use for `--mono` or the central energy for `--gaussian`.
 - `--sigma=d`: the sigma value for `--gaussian`.
-- `--useftfp`: use FTFP_BERT physics. See Reference Physics Lists in Geant4 for more detail.
+- `--useftfp`: use FTFP_BERT physics. See Reference Physics Lists in Geant4 for more details.
 - `--useqgsp`: use QGSP_BERT physics. 
 - `--useqgsphp`: use QGSP_BERT physics with EM physics option 3 (slow). 
-- `--useftfphp`: use FTFP_BERT physics with EM physics option 4 (even slower). Makes sense for high precision dosimetry.
-- `--arbitrary`: allow arbitrary particle source definition in a macro file. See General Particle Source documentation for more detail.
+- `--useftfphp`: use FTFP_BERT physics with EM physics option 4 (even slower). Makes sense for high-precision dosimetry.
+- `--arbitrary`: allow arbitrary particle source definition in a macro file. See General Particle Source documentation for more details.
 - `--printstat`: print debug information on the logical volumes.
 
 
 ## Output file
 The output ROOT file contains two N-tuples.
 ### "Detector Data"
-Has records of <DetectorName> + "_Edep_MeV" and "_Esec_MeV". Edep is the full deposited energy
-and Esec is the energy deposited by non-primary particle species.
+Has records of <DetectorName> + "_Edep_MeV" and "_Esec_MeV". `_Edep_MeV` is the full deposited energy
+and `_Esec_MeV` is the energy deposited by non-primary particle species. The numbers are in MeV.
+
+Also, it has these records: 
+- `Gun_energy_MeV` - the primary energy of each particle, MeV
+- `Gun_angle_deg` - the angle of incidence with respect to the axis defined in a macro file by `/gun/tune/axis x y z`, degrees
+- `Gun_theta_deg` and `Gun_phi_deg` are the angular coordinates of the incident momentum vector in degrees. It is useful, e.g., when one wants to quantify non-normal incidence effects or analyze degrader influence.
+- `Src_theta_deg` and `Src_phi_deg` are the angular coordinates of the incident point location in degrees. This is useful, e.g., when one wants to limit the incident aperture in post-processing or quantify the solid angular acceptance of the particle instrument.
+
+If you need something else, do not hesitate to contact me and describe your idea. Adding another field may benefit everyone.
 
 ### "Simulation Data"
-Has several metadata about the simulation. The fields are written by each thread; 
-thus,to obtain the total particle number one may want to use 
+Has several metadata about the simulation.
+
+
+
+Each thread fills all the field values; thus, to obtain the total particle number, one may want to use 
 ```python
 import uproot
 import numpy as np
@@ -87,7 +98,7 @@ sim = f["Detector Data"]
 data = f["Simulation Data"]
 particle_number = np.sum(data['Particle Number'].array())
 ```
-
+Mind that the particle name would be just an array of equal strings with the length of the thread number used in the simulation.
 
 ## Limitations
 
