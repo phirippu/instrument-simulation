@@ -48,7 +48,7 @@ The command-line options:
 - `--randomid` or `-r`: append a random hex number to the end of the output file name. Useful when the same SLURM script is executed more than once.
 - `--execute=macro` or `-x macro`: macro is the main macro script for Geant4. Mind that sub-macros should have their path defined in the main macro script.
 - `--threads=n` or `-c n`: n is an integer; sets the number of threads to use. It should be equal to the number of cores of the computing node.
-- `--partnum=n` or `-n n`: n is an integer; the number of incident particles to simulate. Due to Geant4 limitations, a single run can not be larger than 2^31 - 1 particles. Larger values are allowed; the simulation is performed in multiple runs.
+- `--partnum=n` or `-n n`: n is an integer; the number of incident particles to simulate. Due to Geant4 limitations, a single run can not be larger than 2^31 - 1 particles.
 - `--particle=name` or `-p name`: the Geant4-compatible incident particle name. See option `--arbitrary` for more details.
 - `--stepsize=d`: the user step size for sensitive volumes. The value `d` is in microns. Use only when you know what you are doing.
 - `--powerlaw`: use the powerlaw distribution for the incident particle energies. See General Particle Source documentation for more detail.
