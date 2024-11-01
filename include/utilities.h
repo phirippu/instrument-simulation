@@ -100,27 +100,38 @@ char *pbuffer;  /* pointer to buffer for output of run info for failures */
 
 /* *************************************************************************** */
 float reverse_float_byte_order(float xold);
-short reverse_short_byte_order(short xold);
-int reverse_int_byte_order(int xold);
+
+[[maybe_unused]] short reverse_short_byte_order(short xold);
+
+[[maybe_unused]] int reverse_int_byte_order(int xold);
 int advance(char *istr, int *sval, int len);
 int check_byte_order(void);
 int clean_name(char *tmp_path, char *opath);
-int clean_name(char *);
+
+[[maybe_unused]] int clean_name(char *);
 int copy(char *SourceFile, char *DestinationFile);
 int eprintf(const char *fmt, ... );
 int ok_check(void);
-int ok_checks(char *string);
+
+[[maybe_unused]] int ok_checks(char *string);
 FILE *open_file(char *filename, const char*extension,const char *access);
-int pprintf(char *fmt, ... );
-int latex_string(char *string, char *nstring);
-void print_runtime_info(int argc, char *argv[]);
-void allocate_pbuffer(void);
+
+[[maybe_unused]] int pprintf(char *fmt, ... );
+
+[[maybe_unused]] int latex_string(char *string, char *nstring);
+
+[[maybe_unused]] void print_runtime_info(int argc, char *argv[]);
+
+[[maybe_unused]] void allocate_pbuffer(void);
 float interpolate(float xh, float xl, float xm, float yh, float yl);
-int array_read(FILE *istrm, float *array, int max_array);
+
+[[maybe_unused]] int array_read(FILE *istrm, float *array, int max_array);
 int array_read(char *in_string, float *array, int max_array);
-int view_errors(void);
+
+[[maybe_unused]] int view_errors(void);
 int writeBigEndianBinaryFile(char *doseFileName,  int nDoseArray, float *doseArray);
-int writeLittleEndianBinaryFile(char *doseFileName,  int nDoseArray, float *doseArray);
+
+[[maybe_unused]] int writeLittleEndianBinaryFile(char *doseFileName,  int nDoseArray, float *doseArray);
 int writeBinaryFile(char *doseFileName, int nDoseArray, float *doseArray, int swab_flag);
 int writeBinaryDataToFile(FILE *outputStream, int nArray, float *array, int swab_flag);
 int readBinaryDataFromFile(FILE *iStream, int nItemsToRead, float **arrayToRead, int swab_flag);

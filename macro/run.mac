@@ -3,7 +3,7 @@
 /event/verbose 0
 /run/initialize
 
-/control/execute ../macro/beam.mac
+/control/execute ../macro/uni.mac
 /control/execute ../macro/detectors.mac
 
 /run/initialize

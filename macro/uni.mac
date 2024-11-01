@@ -1,0 +1,13 @@
+# 0 - point-line beam with zero thickness
+# 3 - a power law 1-10 MeV with zero thickness head on (Debug)
+# 8 - full macro-defined beam
+/gun/tune/beam 8
+/gun/tune/axis 1 0 0
+
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0 0 0  mm
+/gps/pos/radius 70.7 mm
+/gps/ang/type cos
+/gps/ang/surfnorm true
+

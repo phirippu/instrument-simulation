@@ -41,7 +41,6 @@
 #include "G4VisExecutive.hh"
 #include "geant4-sim-gdml.h"
 #include <ActionInitialization.hh>
-#include <FTFP_BERT.hh>
 #include <cstdlib>
 #include <fcntl.h>
 #include <unistd.h>
