@@ -1,12 +1,12 @@
 # instrument-simulation
 It is a small and flexible tool for charged particle simulations. 
-The software is written on the course of the main author's PhD research.
+The software is written during the course of the primary author's PhD research. The dissertation may be found here: https://www.utupub.fi/handle/10024/152846
 
 The tool relies on the Geant4 framework. 
-The Geant4 license explicitly forbids to use of the name "to endorse or promote software, or products derived therefrom, except with prior written permission by license@geant4.org" https://geant4.web.cern.ch/license/LICENSE.html. 
+The Geant4 license explicitly forbids the use of the name "to endorse or promote software, or products derived therefrom, except with prior written permission by license@geant4.org" https://geant4.web.cern.ch/license/LICENSE.html. 
 Thus, there is no "Geant4" in the name. 
 The project is small and research-related, so it does not have to be official. 
-Internally the project has the name "geant4-sim-gdml". 
+Internally, the project has the name "geant4-sim-gdml". 
 It may change, but I see little reason to do that.
 
 ## Scope
@@ -18,18 +18,15 @@ The input data are:
 - The GDML geometry definition.
 - The particle source description.
 - The list of sensitive detectors.
-- The computation options such as the number of threads.
+- The computation options including the number of threads.
 
 The output data is a ROOT data file that contains metadata about the simulation and an event-based table of energies deposited into sensitive detectors.
-There is no analysis performed at the simulation stage since the primary aim of the software is to allow the flexible analysis
+There is no analysis performed at the simulation stage since the primary aim of the software is to allow flexible analysis
 after a computation-heavy Monte-Carlo part has been completed. 
 
 ## History
 
-I used custom code for different particle instruments for a couple of years
-before I started this project. As the custom code evolved in one instrument, I had to implement the same changes in all software, which eventually became too tedious.
-It may sound obvious and predictable for a professional programmer, but the amount
-of time spent coding is almost negligible compared to the other research tasks.
+I used custom code for different particle instruments for a few years before starting this project. As the custom code evolved in one instrument, I had to implement the same changes in all software, which eventually became too tedious. It may sound obvious and predictable for a professional programmer, but the amount of time spent coding is almost negligible compared to the other research tasks.
 
 ## Other software
 This software has been tested against SHELLDOSE and MULASSIS. 
@@ -46,7 +43,7 @@ the long option is `--option=value`. If the software is used on a cluster with S
 
 The command-line options:
 
-- `--input=gdmlfile` or `-i gdmlfile`: gdmlfile is the full name of a GDML file to use as input. This option is required.
+- `--inputfile=gdmlfile` or `-i gdmlfile`: gdmlfile is the full name of a GDML file to use as input. This option is required.
 - `--output=rootfile` or `-o rootfile`: rootfile is the full name of the ROOT output file. See option `-r` or `--randomid` for more detail.
 - `--randomid` or `-r`: append a random hex number to the end of the output file name. Useful when the same SLURM script is executed more than once.
 - `--execute=macro` or `-x macro`: macro is the main macro script for Geant4. Mind that sub-macros should have their path defined in the main macro script.
@@ -78,18 +75,28 @@ and `_Esec_MeV` is the energy deposited by non-primary particle species. The num
 
 Also, it has these records: 
 - `Gun_energy_MeV` - the primary energy of each particle, MeV
-- `Gun_angle_deg` - the angle of incidence with respect to the axis defined in a macro file by `/gun/tune/axis x y z`, degrees
+- `Gun_angle_deg` - the angle of incidence with respect to the primary axis defined in a macro file by `/gun/tune/axis x y z`, degrees
 - `Gun_theta_deg` and `Gun_phi_deg` are the angular coordinates of the incident momentum vector in degrees. It is useful, e.g., when one wants to quantify non-normal incidence effects or analyze degrader influence.
 - `Src_theta_deg` and `Src_phi_deg` are the angular coordinates of the incident point location in degrees. This is useful, e.g., when one wants to limit the incident aperture in post-processing or quantify the solid angular acceptance of the particle instrument.
 
 If you need something else, do not hesitate to contact me and describe your idea. Adding another field may benefit everyone.
 
 ### "Simulation Data"
-Has several metadata about the simulation.
+Has several metadata about the simulation. 
+- `Particle` - the particle name, e.g., 'proton'
+- `Particle Number` - number of simulated particles
+- `Distribution` - particle energy distribution, if available
+- `Shape` - radiating shape, if available
+- `Radius` - radiating sphere radius, if available
+- `Energy Type` - energy distribution type, if available
+- `Angular Distribution` - angular distribution type, if available
+- `Energy Min`, `Energy Mid`, `Energy Max` - energy settings given in the command line or by a macro command
+- `Energy Alpha` - power law index, if applicable
+- `Min Theta`, `Max Theta`, `Min Phi`, `Max Phi` - boundaries of angular coordinates of primary source points
+- `X`, `Y`, and `Z` are source direction vector coordinates, or `generatorAction->GetParticleGun()->GetCurrentSource()->GetAngDist()->GetDirection()`.
+- `Xa`, `Ya`, and `Za` are the coordinates of the primary axis; see above.
 
-
-
-Each thread fills all the field values; thus, to obtain the total particle number, one may want to use 
+Each thread fills all the field values. Most values are constant across threads. Thus, to obtain the total particle number, one may want to use 
 ```python
 import uproot
 import numpy as np
@@ -102,10 +109,10 @@ Mind that the particle name would be just an array of equal strings with the len
 
 ## Limitations
 
-It is impossible to pack data from several runs into a single ROOT file.
+Packaging data from several runs into a single ROOT file is impossible.
 Worker threads are destroyed each time a run ends, and unless there is an external
-a non-Geant4 tool that opens, appends, and closes the ROOT file (which is ridiculous),
+non-Geant4 tool that opens, appends, and closes the ROOT file (which is ridiculous),
 the data of the worker thread is lost.
 
-It is impossible to run more than 2^31 - 1 particles in a single run. This limitation
+Using more than 2^31 - 1 = 2147483647 particles in a single run is impossible. This limitation
 is not a priority in Geant4 development.
