@@ -67,6 +67,16 @@ The command-line options:
 - `--printstat`: print debug information on the logical volumes.
 
 
+## Geant4 macro commands
+
+- `/detector/add name_string`: adds the `name_string` logical volume as sensitive detector. This will create records in the "Detector Data" N-tuple, see below.
+- `/gun/tune/beam [integer]`: tunes the beam to one of the presets. 8 sets the beam to custom, defined by a macro file.
+- `/gun/tune/axis x y z`: makes the axis defined by XYZ vector as a base for angle calculations; see below.
+- `/gun/tune/file base_name`: loads base_name.pshp phase space files from the disk. The name may contain a path.
+- `/detector/list`: lists detectors
+- `/detector/color`: highlights detectors with colors according to a 20-point palette
+- `/detector/colorall`: does the same for all volumes excluding World.
+
 ## Output file
 The output ROOT file contains two N-tuples.
 ### "Detector Data"
