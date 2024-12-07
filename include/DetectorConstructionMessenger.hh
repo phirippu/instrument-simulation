@@ -13,22 +13,23 @@
 
 class DetectorConstruction;
 
-class DetectorConstructionMessenger : public G4UImessenger {
-	friend class DetectorConstruction;
-public:
+class DetectorConstructionMessenger : public G4UImessenger
+{
+    friend class DetectorConstruction;
 
-  void SetNewValue(G4UIcommand*, G4String) override;
+public:
+    void SetNewValue(G4UIcommand*, G4String) override;
 
 private:
+    explicit DetectorConstructionMessenger(DetectorConstruction* DetConstr);
+    ~DetectorConstructionMessenger() override;
 
-    explicit DetectorConstructionMessenger(DetectorConstruction *DetConstr);
-	~DetectorConstructionMessenger() override;
-
-    DetectorConstruction*        fConstruction;
-	G4UIdirectory*               fConstructionDir;
-	G4UIcmdWithAString*          fCreateCmd;
-	G4UIcmdWithoutParameter*     fListCmd;
-	G4UIcmdWithoutParameter*     fColorCmd;
+    DetectorConstruction* fConstruction;
+    G4UIdirectory* fConstructionDir;
+    G4UIcmdWithAString* fCreateCmd;
+    G4UIcmdWithoutParameter* fListCmd;
+    G4UIcmdWithoutParameter* fColorCmd;
+    G4UIcmdWithoutParameter* fColorACmd;
 };
 
 

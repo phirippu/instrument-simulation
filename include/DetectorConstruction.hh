@@ -84,6 +84,7 @@ public:
     void ListDetectors();
 
     void ColorizeDetectors();
+    void ColorizeEverything();
 };
 
 

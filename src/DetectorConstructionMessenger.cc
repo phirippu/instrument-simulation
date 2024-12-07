@@ -7,22 +7,31 @@
 #include "DetectorConstructionMessenger.hh"
 
 
-void DetectorConstructionMessenger::SetNewValue(G4UIcommand *g4command, G4String g4string_name) {
-    if (g4command == fCreateCmd) {
+void DetectorConstructionMessenger::SetNewValue(G4UIcommand* g4command, G4String g4string_name)
+{
+    if (g4command == fCreateCmd)
+    {
         fConstruction->InstallDetector(g4string_name, g4string_name);
         G4RunManager::GetRunManager()->GeometryHasBeenModified(true);
         G4RunManager::GetRunManager()->ReinitializeGeometry();
     }
-    if (g4command == fListCmd) {
+    if (g4command == fListCmd)
+    {
         fConstruction->ListDetectors();
     }
-    if (g4command == fColorCmd) {
+    if (g4command == fColorCmd)
+    {
         fConstruction->ColorizeDetectors();
+    }
+    if (g4command == fColorACmd)
+    {
+        fConstruction->ColorizeEverything();
     }
 }
 
-DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction *DetConstr) :
-        fConstruction(DetConstr) {
+DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* DetConstr) :
+    fConstruction(DetConstr)
+{
     fConstructionDir = new G4UIdirectory("/detector/");
     fConstructionDir->SetGuidance("Sensitive detector manipulations.");
     fCreateCmd = new G4UIcmdWithAString("/detector/add", this);
@@ -35,9 +44,13 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
     fColorCmd = new G4UIcmdWithoutParameter("/detector/color", this);
     fColorCmd->SetGuidance("Colorize sensitive detectors.");
     fColorCmd->AvailableForStates(G4State_Idle);
+    fColorACmd = new G4UIcmdWithoutParameter("/detector/colorall", this);
+    fColorACmd->SetGuidance("Colorize all volumes.");
+    fColorACmd->AvailableForStates(G4State_Idle);
 }
 
-DetectorConstructionMessenger::~DetectorConstructionMessenger() {
+DetectorConstructionMessenger::~DetectorConstructionMessenger()
+{
     delete fConstructionDir;
     delete fCreateCmd;
     delete fListCmd;
