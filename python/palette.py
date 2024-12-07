@@ -10,7 +10,8 @@ import matplotlib
 #
 # # cmap = cm.get_cmap('plasma', 101)
 
-cmap = matplotlib.colormaps['plasma']
+# cmap = matplotlib.colormaps['plasma']
+cmap = matplotlib.colormaps['viridis']
 print("auto const colormap = {")
 for i in range(30):
     c = matplotlib.colors.to_rgba_array(cmap(i / 30))[0]

@@ -25,7 +25,7 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* g4command, G4String
     }
     if (g4command == fColorACmd)
     {
-        fConstruction->ColorizeEverything();
+        fConstruction->ColorizeEverything   ();
     }
 }
 
