@@ -74,8 +74,8 @@ The command-line options:
 - `/gun/tune/axis x y z`: makes the axis defined by XYZ vector as a base for angle calculations; see below.
 - `/gun/tune/file base_name`: loads base_name.pshp phase space files from the disk. The name may contain a path.
 - `/detector/list`: lists detectors
-- `/detector/color`: highlights detectors with colors according to a 20-point palette
-- `/detector/colorall`: does the same for all volumes excluding World.
+- `/detector/color`: highlights detectors with colors according to the 30-point magma palette
+- `/detector/colorall`: does the same for all volumes excluding World according to the 30-point viridis palette.
 
 ## Output file
 The output ROOT file contains two N-tuples.
