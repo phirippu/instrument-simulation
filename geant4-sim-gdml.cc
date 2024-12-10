@@ -174,6 +174,7 @@ int main(int argc, char** argv)
         {
         case ULTRA_LONG_ALLOWED_DECAY_TIME:
             decay_time_g4double = 1.0e+60 * CLHEP::year;
+            break;
         case LOAD_IAEA_PHSP_FILE:
             iaea_phase_space_filename = G4String(optarg);
             break;
