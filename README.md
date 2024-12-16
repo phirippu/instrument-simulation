@@ -65,6 +65,7 @@ The command-line options:
 - `--useftfphp`: use FTFP_BERT physics with EM physics option 4 (even slower). Makes sense for high-precision dosimetry.
 - `--arbitrary`: allow arbitrary particle source definition in a macro file. See General Particle Source documentation for more details.
 - `--printstat`: print debug information on the logical volumes.
+- `--finaldecay`: extends the time limit for radioactive decay to 1E+60 years to assess the total activity in the model
 
 
 ## Geant4 macro commands
@@ -88,6 +89,7 @@ Also, it has these records:
 - `Gun_angle_deg` - the angle of incidence with respect to the primary axis defined in a macro file by `/gun/tune/axis x y z`, degrees
 - `Gun_theta_deg` and `Gun_phi_deg` are the angular coordinates of the incident momentum vector in degrees. It is useful, e.g., when one wants to quantify non-normal incidence effects or analyze degrader influence.
 - `Src_theta_deg` and `Src_phi_deg` are the angular coordinates of the incident point location in degrees. This is useful, e.g., when one wants to limit the incident aperture in post-processing or quantify the solid angular acceptance of the particle instrument.
+- `Time_local` - particle generation time.
 
 If you need something else, do not hesitate to contact me and describe your idea. Adding another field may benefit everyone.
 
