@@ -30,13 +30,11 @@ public:
 
     void EndOfEvent(G4HCofThisEvent *) override;
 
-    G4double GetETotal() const { return eDepTotal; }
-
-    G4double GetAngle() const { return angleIn; }
-
-    G4double GetESecondary() const { return eSecondary; }
-
-    G4double GetEOut() const { return eOut; }
+    [[nodiscard]] G4double GetETotal() const { return eDepTotal; }
+    [[nodiscard]] G4double GetAngle() const { return angleIn; }
+    [[nodiscard]] G4double GetTime() const { return time_g4double; }
+    [[nodiscard]] G4double GetESecondary() const { return eSecondary; }
+    [[nodiscard]] G4double GetEOut() const { return eOut; }
 
     void ClearETotal() {
         eDepTotal = 0;
@@ -46,7 +44,7 @@ public:
     }
 
 private:
-    G4double eDepTotal{}, eSecondary{}, angleIn{}, eOut{};
+    G4double eDepTotal{}, eSecondary{}, angleIn{}, eOut{}, time_g4double{};
     const PrimaryGeneratorAction *generatorAction;
 };
 

@@ -13,12 +13,12 @@
 
 
 ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
-
     analysisManager = G4RootAnalysisManager::Instance();
     analysisManager->SetFileName(rootFileName);
     if (G4Threading::IsMultithreadedApplication()) analysisManager->SetNtupleMerging(true);
 
-    dConstruction = dynamic_cast<const DetectorConstruction *>((G4RunManager::GetRunManager())->GetUserDetectorConstruction());
+    dConstruction = dynamic_cast<const DetectorConstruction *>((G4RunManager::GetRunManager())->
+        GetUserDetectorConstruction());
     sdCollection.clear();
     for (const auto &record: dConstruction->listDetectorNames) {
         const auto &detName = std::get<1>(record);
@@ -40,6 +40,7 @@ ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
     analysisManager->CreateNtupleDColumn(iNtupleIdx, "Gun_phi_deg");
     analysisManager->CreateNtupleDColumn(iNtupleIdx, "Src_theta_deg");
     analysisManager->CreateNtupleDColumn(iNtupleIdx, "Src_phi_deg");
+    analysisManager->CreateNtupleDColumn(iNtupleIdx, "Time_local");
     analysisManager->FinishNtuple(iNtupleIdx);
     if (!analysisManager->IsOpenFile()) {
         analysisManager->OpenFile();
@@ -47,19 +48,24 @@ ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
 }
 
 void ThreadRun::RecordEvent(const G4Event *aEvent) {
-    G4double angleGun = 0, energyGun = 0;
-    G4double thetaGun = 0, phiGun = 0;
-    G4double thetaSrc = 0, phiSrc = 0;
-    G4int column_index = 0;
     const unsigned long data_length = sdCollection.size();
-    std::valarray<G4double> deposited_energies;
     std::valarray<G4double> deposited_energies_from_secondaries;
 
     if (data_length > 0) {
-        const auto generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
-        if (generatorAction != nullptr) {
-            auto particle_direction = generatorAction->GetParticleGun()->GetParticleMomentumDirection();
-            auto particle_source = generatorAction->GetParticleGun()->GetParticlePosition();
+        std::valarray<G4double> deposited_energies;
+        G4int column_index = 0;
+        G4double energyGun = 0;
+        G4double angleGun = 0;
+        G4double phiGun = 0;
+        G4double thetaGun = 0;
+        G4double thetaSrc = 0;
+        G4double phiSrc = 0;
+        G4double localtime = 0;
+        if (const auto generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->
+            GetUserPrimaryGeneratorAction()); generatorAction != nullptr) {
+            const auto particle_direction = generatorAction->GetParticleGun()->GetParticleMomentumDirection();
+            const auto particle_source = generatorAction->GetParticleGun()->GetParticlePosition();
+
             angleGun = particle_direction.angle(generatorAction->GetPrimaryAxis()) / deg;
             angleGun = fabs(angleGun);
             thetaGun = particle_direction.getTheta() / CLHEP::degree;
@@ -71,13 +77,16 @@ void ThreadRun::RecordEvent(const G4Event *aEvent) {
         deposited_energies.resize(data_length);
         // Check the deposited energies. Any non-zero deposit to detectors is recorded in a full detector record.
         for (auto &detector_record: sdCollection) {
+            localtime = localtime > detector_record->GetTime() ? localtime : detector_record->GetTime();
             deposited_energies[column_index++] = detector_record->GetETotal() / MeV;
             /* #include "G4SystemOfUnits.hh" ; static constexpr double megaelectronvolt = 1. ;*/
         }
         column_index = 0;
         if (deposited_energies.sum() > 0) {
-            for (auto &x: deposited_energies) { analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, x); }
-            for (auto &detector_record: sdCollection) {
+            for (const auto &x: deposited_energies) {
+                analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, x);
+            }
+            for (const auto &detector_record: sdCollection) {
                 analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, detector_record->GetESecondary() / MeV);
             }
             analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, energyGun);
@@ -85,7 +94,8 @@ void ThreadRun::RecordEvent(const G4Event *aEvent) {
             analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, thetaGun);
             analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, phiGun);
             analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, thetaSrc);
-            analysisManager->FillNtupleDColumn(iNtupleIdx, column_index, phiSrc);
+            analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, phiSrc);
+            analysisManager->FillNtupleDColumn(iNtupleIdx, column_index++, localtime);
             analysisManager->AddNtupleRow(iNtupleIdx);
         }
         for (auto &detector_record: sdCollection) {
@@ -93,11 +103,9 @@ void ThreadRun::RecordEvent(const G4Event *aEvent) {
         }
     }
     G4Run::RecordEvent(aEvent);
-
 }
 
 void ThreadRun::Merge(const G4Run *aTSRun) {
-
     G4cout << "[ThreadRun] Merge" << G4endl;
     G4Run::Merge(aTSRun);
 }

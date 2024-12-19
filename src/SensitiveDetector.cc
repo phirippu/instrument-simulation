@@ -9,9 +9,10 @@
 #define DBG 0
 
 SensitiveDetector::SensitiveDetector(const G4String &name)
-        : G4MultiFunctionalDetector(name) {
+    : G4MultiFunctionalDetector(name) {
     eDepTotal = 0;
     eSecondary = 0;
+    time_g4double = 0;
     generatorAction = nullptr;
 }
 
@@ -23,7 +24,8 @@ void SensitiveDetector::Initialize(G4HCofThisEvent *) {
     eDepTotal = 0;
     eSecondary = 0;
     angleIn = -500 * degree;
-    generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
+    generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->
+        GetUserPrimaryGeneratorAction());
 #if DBG
     G4cout << "Event at \033[31m" << this->GetName() << "\033[0m" << G4endl;
 #endif
@@ -63,6 +65,7 @@ G4bool SensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
            << aStep->GetPreStepPoint()->GetPosition() << "\t\t"
            << aStep->GetPreStepPoint()->GetSensitiveDetector()->GetName() << G4endl;
 #endif
+    time_g4double = aStep->GetTrack()->GetGlobalTime() / CLHEP::ns;
     if (aStep->GetTrack()->GetParticleDefinition()->GetParticleName() !=
         generatorAction->GetParticleGun()->GetParticleDefinition()->GetParticleName()) { eSecondary += edepThisStep; }
     return true;
