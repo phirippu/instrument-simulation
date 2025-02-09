@@ -356,6 +356,7 @@ int main(int argc, char** argv)
     {
         pPhysicsList = new PhysicsList();
         pPhysicsList->RegisterPhysics(new G4RadioactiveDecayPhysics);
+        G4HadronicParameters::Instance()->SetTimeThresholdForRadioactiveDecay(decay_time_g4double);
     }
 
 
