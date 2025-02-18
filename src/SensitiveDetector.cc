@@ -66,8 +66,9 @@ G4bool SensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
            << aStep->GetPreStepPoint()->GetSensitiveDetector()->GetName() << G4endl;
 #endif
     time_g4double = aStep->GetTrack()->GetGlobalTime() / CLHEP::ns;
-    if (aStep->GetTrack()->GetParticleDefinition()->GetParticleName() !=
-        generatorAction->GetParticleGun()->GetParticleDefinition()->GetParticleName()) { eSecondary += edepThisStep; }
+    // if (aStep->GetTrack()->GetParticleDefinition()->GetParticleName() !=
+    //     generatorAction->GetParticleGun()->GetParticleDefinition()->GetParticleName()) { eSecondary += edepThisStep; }
+    if (aStep->GetTrack()->GetTrackID() != 1) { eSecondary += edepThisStep; }
     return true;
 }
 
