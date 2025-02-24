@@ -99,8 +99,8 @@ private:
     beamType fPrimaryBeamType;
     G4String fIAEA_phase_file;
     G4RunManager *frunManager;
-
-
+    G4double fPoissonRate;
+    G4double fCurrentTime;  // Track the thread-local simulation time;
     static G4IAEAphspReader * theIAEAReader;
 
 };

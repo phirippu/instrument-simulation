@@ -1,4 +1,3 @@
-
 #include <Randomize.hh>
 #include <utility>
 #include <G4RunManager.hh>
@@ -12,20 +11,25 @@
 #include "G4IAEAphspReader.hh"
 
 
-namespace { G4Mutex myPrimGenMutex = G4MUTEX_INITIALIZER; }
+namespace {
+    G4Mutex myPrimGenMutex = G4MUTEX_INITIALIZER;
+}
+
 G4IAEAphspReader *PrimaryGeneratorAction::theIAEAReader = nullptr;
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(G4String iaea_File, G4int nThreads)
-        : G4VUserPrimaryGeneratorAction(),
-          fRadius(10 * cm), fnThreads(nThreads),
-          fIAEA_phase_file(std::move(iaea_File)) {
+    : G4VUserPrimaryGeneratorAction(),
+      fRadius(10 * cm), fnThreads(nThreads),
+      fIAEA_phase_file(std::move(iaea_File)) {
     gun = InitializeGPS();
     fDetectorAxisVector = G4ThreeVector(-1, 0, 0); // default axis
-    fPrimaryBeamType = simplebeam;
+    fPrimaryBeamType = macrodefined;
     fMessengerDir = nullptr;
     fAngle = 0;
     fBeamTypeInt = 0;
+    fCurrentTime = 0;
     InitTheGun();
+    fPoissonRate = 1E+28;
     frunManager = G4RunManager::GetRunManager();
     G4cerr << frunManager << G4endl;
 }
@@ -83,6 +87,11 @@ void PrimaryGeneratorAction::DefineCommands() {
     iaeaCmd.SetGuidance("The IAEA phase space file.\n");
     iaeaCmd.SetParameterName("IAEA file", false);
     iaeaCmd.SetDefaultValue("");
+
+    auto &rateCmd = fMessengerDir->DeclarePropertyWithUnit("poissonrate", "Hz", fPoissonRate);
+    rateCmd.SetGuidance("Poisson paticle generation rate.\n");
+    rateCmd.SetParameterName("Rate, Hz", false);
+    rateCmd.SetDefaultValue("1E+28");
 }
 
 
@@ -96,7 +105,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction() {
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
-//    const G4ThreeVector centreSiDet(29.4017 * mm, 0.15 * mm, 786.881 * mm);
+    //    const G4ThreeVector centreSiDet(29.4017 * mm, 0.15 * mm, 786.881 * mm);
     const G4ThreeVector Aalto1_centreSphereOfRadiation(0. * mm, 0. * mm, 950 * mm);
     const G4ThreeVector Radmon_centreSphereOfRadiation(29.4 * mm, 0. * mm, 786 * mm);
     G4ThreeVector centreSphereOfRadiation(0. * mm, 0. * mm, 0. * mm);
@@ -110,7 +119,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
     fPrimaryBeamType = static_cast<beamType>(fBeamTypeInt);
 
     switch (fPrimaryBeamType) {
-        case macrodefined:;
+        case macrodefined: ;
             break;
         case simplebeam:
             gun->GetCurrentSource()->GetPosDist()->SetCentreCoords(fGunPosition);
@@ -201,14 +210,20 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
             gun->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(local_z);
             break;
     }
-//    G4cerr << gun->GetParticleEnergy()<< "MeV"<< G4endl ;
-//    gun->GetParticleDefinition()->DumpTable();
-//    G4cerr << << "MeV"<< G4endl ;
+    //    G4cerr << gun->GetParticleEnergy()<< "MeV"<< G4endl ;
+    //    gun->GetParticleDefinition()->DumpTable();
+    //    G4cerr << << "MeV"<< G4endl ;
     if (theIAEAReader) {
         G4AutoLock lock(&myPrimGenMutex);
-//        theIAEAReader->SetParallelRun(G4Threading::G4GetThreadId());
+        //        theIAEAReader->SetParallelRun(G4Threading::G4GetThreadId());
         theIAEAReader->GeneratePrimaryVertex(anEvent);
     } else {
+        // Generate time interval using an exponential distribution
+        const G4double dt = -std::log(G4UniformRand()) / (fPoissonRate / CLHEP::hertz);
+        // Exponential arrival time, rate is in Hz.
+        fCurrentTime += dt; // Update simulation time
+        // Assign time delay to event
+        gun->SetParticleTime(fCurrentTime * CLHEP::second);
         gun->GeneratePrimaryVertex(anEvent);
     }
 }
@@ -216,11 +231,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
 
 G4GeneralParticleSource *PrimaryGeneratorAction::InitializeGPS() {
     auto *gps = new G4GeneralParticleSource();
-//    gps->GetCurrentSource()->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle("proton"));
+    //    gps->GetCurrentSource()->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle("proton"));
     gps->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
     gps->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
     gps->GetCurrentSource()->GetPosDist()->SetCentreCoords(fGunPosition);
     gps->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(fGunDirection);
     return gps;
 }
-
