@@ -72,6 +72,7 @@ The command-line options:
 
 - `/detector/add name_string`: adds the `name_string` logical volume as sensitive detector. This will create records in the "Detector Data" N-tuple, see below.
 - `/gun/tune/beam [integer]`: tunes the beam to one of the presets. 8 sets the beam to custom, defined by a macro file.
+- `/gun/tune/poissonrate [float]`: sets the thread-local poisson intensity in Hz (s<sup>-1</sup>) for the incident particles. Mind that the multi-threading affects the intensity (frequency is multiplied by the number of threads). 
 - `/gun/tune/axis x y z`: makes the axis defined by XYZ vector as a base for angle calculations; see below.
 - `/gun/tune/file base_name`: loads base_name.pshp phase space files from the disk. The name may contain a path.
 - `/detector/list`: lists detectors
@@ -89,7 +90,7 @@ Also, it has these records:
 - `Gun_angle_deg` - the angle of incidence with respect to the primary axis defined in a macro file by `/gun/tune/axis x y z`, degrees
 - `Gun_theta_deg` and `Gun_phi_deg` are the angular coordinates of the incident momentum vector in degrees. It is useful, e.g., when one wants to quantify non-normal incidence effects or analyze degrader influence.
 - `Src_theta_deg` and `Src_phi_deg` are the angular coordinates of the incident point location in degrees. This is useful, e.g., when one wants to limit the incident aperture in post-processing or quantify the solid angular acceptance of the particle instrument.
-- `Time_local` - particle generation time.
+- `Time_local` - particle detection time. It is the last time a particle deposited a non-zero energy in any sensitive detector. The time is in ns.
 
 If you need something else, do not hesitate to contact me and describe your idea. Adding another field may benefit everyone.
 
