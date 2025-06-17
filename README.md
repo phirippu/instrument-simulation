@@ -1,6 +1,6 @@
 # instrument-simulation
 It is a small and flexible tool for charged particle simulations. 
-The software is started during the course of the primary author's PhD research. The dissertation may be found here: https://www.utupub.fi/handle/10024/152846
+The software was started during the course of the primary author's PhD research. The dissertation may be found here: https://www.utupub.fi/handle/10024/152846
 
 The tool relies on the Geant4 framework. 
 The Geant4 license explicitly forbids the use of the name "to endorse or promote software, or products derived therefrom, except with prior written permission by license@geant4.org" https://geant4.web.cern.ch/license/LICENSE.html. 
