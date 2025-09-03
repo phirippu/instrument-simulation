@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Oleynik
+    given-names: Philipp
+    orcid: https://orcid.org/0000-0003-0794-7742
+title: "Instrument-Simulation"
+version: 1.0.3
+identifiers:
+  - type: isbn
+    value: 978-951-29-8705-4
+date-released: 2021-12-15
