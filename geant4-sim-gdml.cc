@@ -101,8 +101,8 @@ int main(int argc, char** argv)
     G4VisManager* visManager = nullptr;
     //    G4double particleBeamRadius = 10 * cm;
     G4double stepSizeMicrons = 0.0;
-    G4double particleEnergyMeV_E1 = 0.001;
-    G4double particleEnergyMeV_E2 = 0.001;
+    G4double particleEnergyMeV_E1 = 0;
+    G4double particleEnergyMeV_E2 = 0;
     G4double particle_sigma = 0.001;
     G4double powerlaw_alpha = 0;
     G4double decay_time_g4double = 1.0 * CLHEP::year;
