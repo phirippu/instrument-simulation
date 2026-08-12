@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="./gdml.xsd">
+    <define>
+        <position name="pos00" unit="mm" x="0.00000000e+00" y="0.00000000e+00" z="0.00000000e+00"/>
+        <rotation name="identity_rot" unit="rad" x="0" y="0" z="0"/>
+    </define>
+
+    <!-- Define materials -->
+    <materials>
+        <element name="Silicon" Z="14">
+            <atom value="28.0855"/>
+        </element>
+
+        <material name="Si" state="solid">
+            <D value="2.33" unit="g/cm3"/>
+            <fraction n="1.0" ref="Silicon"/>
+        </material>
+
+        <!-- Vacuum world -->
+        <material name="Vacuum">
+            <D value="1e-4" unit="g/cm3"/>
+            <fraction n="1.0" ref="Silicon"/>
+        </material>
+    </materials>
+
+    <!-- Define solids -->
+    <solids>
+        <!-- Spherical shell: inner radius = 4 cm, outer radius = 5 cm -->
+        <sphere name="ShellSolid"
+                rmin="4.0" rmax="5.0"
+                startphi="0" deltaphi="360"
+                starttheta="0" deltatheta="180"
+                lunit="cm" aunit="deg"/>
+
+        <sphere name="FilmSolid"
+                rmin="3.898" rmax="3.9"
+                startphi="0" deltaphi="360"
+                starttheta="0" deltatheta="180"
+                lunit="cm" aunit="deg"/>
+
+        <!-- World volume -->
+        <box name="WorldSolid" x="20.0" y="20.0" z="20.0" lunit="cm"/>
+    </solids>
+
+    <!-- Define structure -->
+    <structure>
+
+        <!-- Shell logical volume -->
+        <volume name="ShellLV">
+            <materialref ref="G4_WATER"/>
+            <solidref ref="ShellSolid"/>
+        </volume>
+        <volume name="FilmLV">
+            <materialref ref="G4_Galactic"/>
+            <solidref ref="FilmSolid"/>
+        </volume>
+
+        <!-- World logical volume -->
+        <volume name="WorldLV">
+            <materialref ref="Vacuum"/>
+            <solidref ref="WorldSolid"/>
+            <physvol>
+                <volumeref ref="ShellLV"/>
+                <positionref ref="pos00"/>
+            </physvol>
+            <physvol>
+                <volumeref ref="FilmLV"/>
+                <positionref ref="pos00"/>
+            </physvol>
+        </volume>
+
+    </structure>
+
+    <!-- Setup -->
+    <setup name="Default" version="1.0">
+        <world ref="WorldLV"/>
+    </setup>
+
+</gdml>

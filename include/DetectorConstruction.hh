@@ -58,7 +58,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
 
 public:
-    typedef std::tuple<G4int, G4String, G4String> tupDetectorName;
+    typedef std::tuple<G4int, G4String, G4String, G4int> tupDetectorName;
     typedef std::list<tupDetectorName> lsDetectorNameRecords;
 private:
     G4VPhysicalVolume *pvWorld;
@@ -77,14 +77,17 @@ public:
 
     G4VPhysicalVolume *Construct() override;
 
+    static void DefineOpticalProperties(G4LogicalVolume * optical_volume);
+
     void ConstructSDandField() override;
 
-    void InstallDetector(const G4String &log_volume_name, const G4String &detector_name);
+    void InstallDetector(const G4String &log_volume_name, const G4String &detector_name, G4int cherenkov);
 
     void ListDetectors();
 
     void ColorizeDetectors();
     void ColorizeEverything();
+
 };
 
 

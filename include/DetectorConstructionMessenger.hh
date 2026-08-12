@@ -27,6 +27,7 @@ private:
     DetectorConstruction* fConstruction;
     G4UIdirectory* fConstructionDir;
     G4UIcmdWithAString* fCreateCmd;
+    G4UIcmdWithAString* fCreateCherenkovCmd;
     G4UIcmdWithoutParameter* fListCmd;
     G4UIcmdWithoutParameter* fColorCmd;
     G4UIcmdWithoutParameter* fColorACmd;

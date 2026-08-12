@@ -1,0 +1,21 @@
+/gun/tune/beam 8
+/gun/tune/axis 1 0 0
+
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0 0 0  mm
+/gps/pos/radius 10 mm
+/gps/ang/type cos
+/gps/ang/surfnorm true
+
+
+# Accept only hits in the first 5 microseconds of each event
+/event/timeWindow 5 s
+
+# Your usual source configuration here...
+/gps/particle ion
+# /gps/ion 27 60 0     # Co-60 as an example
+# /gps/ion 83 207      # Bi-207 as an example
+/gps/ion 95 241      # Am-241 as an example
+
+/detector/add ShellLV

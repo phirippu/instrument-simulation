@@ -12,16 +12,20 @@
 
 
 RunAction::RunAction(G4String rootFileName)
-        : G4UserRunAction(), localRun(nullptr), nofEvents(0), fRootFileName(std::move(rootFileName)) {
+    : G4UserRunAction(),
+      localRun(nullptr),
+      nofEvents(0),
+      fRootFileName(std::move(rootFileName)) {
     fRunID = 0;
     iNtupleIdx = 0;
+    fEventWindowMessenger = std::make_unique<EventWindowMessenger>();
 }
 
 RunAction::~RunAction() = default;
 
 G4Run *RunAction::GenerateRun() {
     localRun = new ThreadRun(fRootFileName);
-    return (G4Run *) localRun;
+    return localRun;
 }
 
 // This method is called immediately after GenerateRun
@@ -65,7 +69,8 @@ void RunAction::EndOfRunAction(const G4Run *run) {
     nofEvents = run->GetNumberOfEvent();
     if (nofEvents == 0) return;
 
-    const auto generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
+    const auto generatorAction = dynamic_cast<const PrimaryGeneratorAction *>(G4RunManager::GetRunManager()->
+        GetUserPrimaryGeneratorAction());
     if ((generatorAction != nullptr) && !bTupleWritten) {
         particle_name = generatorAction->GetParticleGun()->GetParticleDefinition()->GetParticleName();
         dist_type = generatorAction->GetParticleGun()->GetCurrentSource()->GetPosDist()->GetSourcePosType();
@@ -116,12 +121,12 @@ void RunAction::EndOfRunAction(const G4Run *run) {
     analysisManager->Write();
 
     if (IsMaster()) {
-//        b_tuple_written = TRUE;
+        //        b_tuple_written = TRUE;
         if (analysisManager->IsOpenFile()) { analysisManager->CloseFile(); }
         G4cout << G4endl << "[RunAction] --------------------End of Global Run-----------------------" << G4endl
-               << "[RunAction]  The run was " << nofEvents << " events " << G4endl;
+                << "[RunAction]  The run was " << nofEvents << " events " << G4endl;
     } else {
         G4cout << G4endl << "[RunAction] --------------------End of Local Run------------------------" << G4endl
-               << "[RunAction]  The run was " << nofEvents << " events" << G4endl;
+                << "[RunAction]  The run was " << nofEvents << " events" << G4endl;
     }
 }

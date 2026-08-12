@@ -7,37 +7,40 @@
 #include "DetectorConstructionMessenger.hh"
 
 
-void DetectorConstructionMessenger::SetNewValue(G4UIcommand* g4command, G4String g4string_name)
-{
-    if (g4command == fCreateCmd)
-    {
-        fConstruction->InstallDetector(g4string_name, g4string_name);
+void DetectorConstructionMessenger::SetNewValue(G4UIcommand *g4command, G4String g4string_name) {
+    if (g4command == fCreateCmd) {
+        fConstruction->InstallDetector(g4string_name, g4string_name, 0);
         G4RunManager::GetRunManager()->GeometryHasBeenModified(true);
         G4RunManager::GetRunManager()->ReinitializeGeometry();
     }
-    if (g4command == fListCmd)
-    {
+    if (g4command == fCreateCherenkovCmd) {
+        fConstruction->InstallDetector(g4string_name, g4string_name, 1);
+        G4RunManager::GetRunManager()->GeometryHasBeenModified(true);
+        G4RunManager::GetRunManager()->ReinitializeGeometry();
+    }
+    if (g4command == fListCmd) {
         fConstruction->ListDetectors();
     }
-    if (g4command == fColorCmd)
-    {
+    if (g4command == fColorCmd) {
         fConstruction->ColorizeDetectors();
     }
-    if (g4command == fColorACmd)
-    {
-        fConstruction->ColorizeEverything   ();
+    if (g4command == fColorACmd) {
+        fConstruction->ColorizeEverything();
     }
 }
 
-DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* DetConstr) :
-    fConstruction(DetConstr)
-{
+DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction *DetConstr) : fConstruction(
+    DetConstr) {
     fConstructionDir = new G4UIdirectory("/detector/");
     fConstructionDir->SetGuidance("Sensitive detector manipulations.");
     fCreateCmd = new G4UIcmdWithAString("/detector/add", this);
     fCreateCmd->SetGuidance("Add a sensitive detector into stack.");
     fCreateCmd->SetParameterName("logical_volume", false);
     fCreateCmd->AvailableForStates(G4State_Idle);
+    fCreateCherenkovCmd = new G4UIcmdWithAString("/detector/addcher", this);
+    fCreateCherenkovCmd->SetGuidance("Add a Cherenkov sensitive detector into stack.");
+    fCreateCherenkovCmd->SetParameterName("logical_volume", false);
+    fCreateCherenkovCmd->AvailableForStates(G4State_Idle);
     fListCmd = new G4UIcmdWithoutParameter("/detector/list", this);
     fListCmd->SetGuidance("List sensitive detectors.");
     fListCmd->AvailableForStates(G4State_Idle);
@@ -49,9 +52,9 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
     fColorACmd->AvailableForStates(G4State_Idle);
 }
 
-DetectorConstructionMessenger::~DetectorConstructionMessenger()
-{
+DetectorConstructionMessenger::~DetectorConstructionMessenger() {
     delete fConstructionDir;
     delete fCreateCmd;
     delete fListCmd;
+    delete fCreateCherenkovCmd;
 }

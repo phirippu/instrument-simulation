@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.30 FATAL_ERROR)
 project(Geant4-sim-gdml)
 
 #----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and
 set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED CONFIG)
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 #
@@ -33,13 +33,14 @@ include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include 
                     ${Geant4_INCLUDE_DIR})
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h*)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(geant4-sim-gdml geant4-sim-gdml.cc ${sources} ${headers} geant4-sim-gdml.h)
-target_link_libraries(geant4-sim-gdml ${Geant4_LIBRARIES} GSL::gsl GSL::gslcblas)
+add_executable(geant4-sim-gdml geant4-sim-gdml.cc ${sources} ${headers} geant4-sim-gdml.h
+        include/DAQSettings.h)
+target_link_libraries(geant4-sim-gdml ${Geant4_LIBRARIES} GSL::gsl GSL::gslcblas Boost::boost)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

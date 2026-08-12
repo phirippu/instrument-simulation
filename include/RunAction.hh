@@ -14,6 +14,7 @@
 #include "globals.hh"
 #include "ThreadRun.hh"
 #include "EventAction.hh"
+#include "EventWindowMessenger.h"
 
 extern G4bool bTupleWritten;
 
@@ -31,6 +32,8 @@ public:
     void EndOfRunAction(const G4Run *) override;
 
     G4Run *GenerateRun() override;
+
+    std::unique_ptr<EventWindowMessenger> fEventWindowMessenger;
 
 private:
     ThreadRun *localRun;
@@ -59,7 +62,7 @@ private:
 
     G4int fRunID;
     G4int iNtupleIdx;
-    const DetectorConstruction *dConstruction;
+    const DetectorConstruction *dConstruction{};
 };
 
 
