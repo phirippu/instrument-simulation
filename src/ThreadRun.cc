@@ -3,6 +3,8 @@
 //
 
 #include "ThreadRun.hh"
+
+#include <G4AnalysisManager.hh>
 #include <G4Event.hh>
 #include <G4RunManager.hh>
 #include <G4SDManager.hh>
@@ -14,8 +16,13 @@
 
 ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
     analysisManager = G4RootAnalysisManager::Instance();
+    analysisManager->SetDefaultFileType("root");
     analysisManager->SetFileName(rootFileName);
-    if (G4Threading::IsMultithreadedApplication()) analysisManager->SetNtupleMerging(true);
+
+    if (G4Threading::IsMultithreadedApplication()) {
+        analysisManager->SetNtupleMerging(true);
+        analysisManager->SetH1Activation(false);
+    }
 
     dConstruction = dynamic_cast<const DetectorConstruction *>((G4RunManager::GetRunManager())->
         GetUserDetectorConstruction());
@@ -27,6 +34,7 @@ ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
     }
 
     iNtupleIdx = analysisManager->CreateNtuple("Detector Data", "Deposited energies");
+    G4cerr << "nTuple created under index " << iNtupleIdx << G4endl;
 
     for (auto &detector_record: dConstruction->listDetectorNames) {
         analysisManager->CreateNtupleDColumn(iNtupleIdx, std::get<2>(detector_record) + "_Edep_MeV");
@@ -43,6 +51,8 @@ ThreadRun::ThreadRun(const G4String &rootFileName) : G4Run() {
     analysisManager->CreateNtupleDColumn(iNtupleIdx, "Time_local");
     analysisManager->CreateNtupleDColumn(iNtupleIdx, "Time_global");
     analysisManager->FinishNtuple(iNtupleIdx);
+
+
     if (!analysisManager->IsOpenFile()) {
         analysisManager->OpenFile();
     }

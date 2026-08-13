@@ -61,6 +61,15 @@ void RunAction::BeginOfRunAction(const G4Run *run) {
     zacol = analysisManager->CreateNtupleDColumn(miscIdx, "Za");
 
     analysisManager->FinishNtuple(miscIdx);
+
+    auto histogram_index = analysisManager->CreateH1("CherenkovWavelength",
+                                                 "Cherenkov Photon Wavelength Spectrum; Wavelength (nm); Counts",
+                                                 100, 200.0, 800.0,
+                                                 "nm", "none", "log");
+
+    G4cerr << "Histogram created under index " << histogram_index << G4endl;
+
+
     bTupleWritten = FALSE;
 }
 

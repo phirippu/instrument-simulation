@@ -8,7 +8,14 @@
 
 #include <G4OpticalPhoton.hh>
 #include <G4RadioactiveDecay.hh>
+#include <G4RootAnalysisManager.hh>
 #include <G4RunManager.hh>
+
+#include "G4Cerenkov.hh"
+#include "G4VProcess.hh"
+#include "G4OpticalPhoton.hh"
+#include "G4EmProcessSubType.hh"
+#include "G4AnalysisManager.hh"
 
 #define DBG 0
 
@@ -50,15 +57,21 @@ G4bool SensitiveDetector::ProcessHits(G4Step *step, G4TouchableHistory *ROhist) 
     static auto const optical_photon = G4OpticalPhoton::OpticalPhotonDefinition();
     const G4double globalTime = track->GetGlobalTime();
     // const auto logical_detector_volume = ROhist->GetVolume()->GetLogicalVolume();
-    const G4double edepThisStep = step->GetTotalEnergyDeposit() * CLHEP::MeV;
+    const G4double edepThisStep = step->GetTotalEnergyDeposit() / CLHEP::MeV;
     const G4ThreeVector &displace = step->GetDeltaPosition();
     const auto tw = DAQSettings::Instance().GetTimeWindow();
-
     const G4ParticleDefinition *particle = track->GetDefinition();
+
     // Check if the particle is an optical photon
     if (particle == optical_photon) {
         track->SetTrackStatus(fStopAndKill);
-        track_length_cm += 1;
+        if (track->GetCreatorProcess()->GetProcessSubType() == fCerenkov) {
+            G4double photonEnergy = track->GetKineticEnergy() / CLHEP::eV;
+            G4double wavelength_nm = (1240.0 / photonEnergy);
+            auto analysisManager = G4RootAnalysisManager::Instance();
+            analysisManager->FillH1(0, wavelength_nm, 1);
+            track_length_cm += 1;
+        }
     }
 
     if (tw > 0.) {
